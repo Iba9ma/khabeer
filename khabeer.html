@@ -1,0 +1,1478 @@
+<title>منصة خبير</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* الفكرة: ثلاث بوابات (عميل / محامٍ / إدارة) فوق بيانات واحدة — هوية كحلية رسمية بلمسة ورق قانوني.
+   وضعان فاتح وداكن: يتبع إعداد الجهاز افتراضياً، وزر في الشريط العلوي يحفظ اختيار المستخدم. */
+:root{
+  color-scheme:light;
+  --line2:#cdd5e3;--soft:#f3f5fa;--ink2:#334155;--accent-ink:#1e3a8a;--toast-bg:#101828;
+  --warn-line:#f5d18a;--warn-ink:#7a4504;--info-ink:#1e3a8a;--ok-line:#9be3c4;--ok-ink:#065f46;--err-line:#f6b4b4;--err-ink:#991b1b;
+  --st-review-bg:#fdf0cf;--st-review:#8a4b05;--st-prog:#1d3fa8;--st-ready-bg:#d6f5e6;--st-ready:#0b6b4a;--st-closed-bg:#e6eaf1;--st-cancel-bg:#fde1e1;--st-cancel:#9b1c1c;
+  --avatar-bg:#e8eefc;--hover-line:#9db8f5;
+  --navy:#1e3a8a;--navy-ink:#172554;--blue:#2563eb;--blue-50:#eef4ff;--blue-100:#dbe7ff;
+  --green:#0f9f6e;--green-50:#ecfdf5;--red:#d42c2c;--red-50:#fef2f2;--amber:#b86e04;--amber-50:#fff8eb;
+  --ink:#101828;--muted:#5b6478;--line:#e2e7f0;--bg:#f4f6fb;--card:#ffffff;--paper:#fbfaf6;
+  --violet:#6d28d9;--violet-50:#f7f3ff;
+  --font:'Tajawal',system-ui,'Segoe UI',Tahoma,sans-serif;
+  --mono:Consolas,'Courier New',monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --blue:#3b82f6;--blue-50:#16213d;--blue-100:#1e2e55;
+  --green-50:#0f2a22;--red-50:#331a1d;--amber-50:#33270f;--violet-50:#231b3a;--violet:#a78bfa;
+  --ink:#e6eaf2;--ink2:#cbd3e1;--muted:#9aa6bd;--line:#2a3550;--line2:#3a4766;--bg:#0b1120;--card:#141c2f;--paper:#182238;--soft:#1a2338;
+  --accent-ink:#9db8f5;--toast-bg:#26324d;
+  --warn-line:#6b4a12;--warn-ink:#f6cf7f;--info-ink:#bcd0fb;--ok-line:#1e5c45;--ok-ink:#86e0b9;--err-line:#6b2a2a;--err-ink:#f6a5a5;
+  --st-review-bg:#3a2c0e;--st-review:#f6cf7f;--st-prog:#bcd0fb;--st-ready-bg:#0f3326;--st-ready:#86e0b9;--st-closed-bg:#253049;--st-cancel-bg:#3a1a1c;--st-cancel:#f6a5a5;
+  --avatar-bg:#25335a;--hover-line:#4a6fc0;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --blue:#3b82f6;--blue-50:#16213d;--blue-100:#1e2e55;
+  --green-50:#0f2a22;--red-50:#331a1d;--amber-50:#33270f;--violet-50:#231b3a;--violet:#a78bfa;
+  --ink:#e6eaf2;--ink2:#cbd3e1;--muted:#9aa6bd;--line:#2a3550;--line2:#3a4766;--bg:#0b1120;--card:#141c2f;--paper:#182238;--soft:#1a2338;
+  --accent-ink:#9db8f5;--toast-bg:#26324d;
+  --warn-line:#6b4a12;--warn-ink:#f6cf7f;--info-ink:#bcd0fb;--ok-line:#1e5c45;--ok-ink:#86e0b9;--err-line:#6b2a2a;--err-ink:#f6a5a5;
+  --st-review-bg:#3a2c0e;--st-review:#f6cf7f;--st-prog:#bcd0fb;--st-ready-bg:#0f3326;--st-ready:#86e0b9;--st-closed-bg:#253049;--st-cancel-bg:#3a1a1c;--st-cancel:#f6a5a5;
+  --avatar-bg:#25335a;--hover-line:#4a6fc0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14.5px;line-height:1.65}
+body{direction:rtl}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:90;background:var(--navy-ink)}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+h1,h2,h3{text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.demobar{background:var(--navy-ink);color:#c7d2fe;font-size:12.5px}
+.demobar .in{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:7px;max-width:1280px;margin:0 auto}
+.demobar .lbl{font-weight:700;letter-spacing:.02em}
+.seg{display:flex;background:rgba(255,255,255,.1);border-radius:10px;padding:3px;gap:2px}
+.seg button{background:none;border:0;color:#c7d2fe;padding:5px 12px;border-radius:8px;font-weight:700;font-size:12.5px}
+.seg button.on{background:#fff;color:#1e3a8a}
+.demobar .clock{margin-inline-start:auto;color:#a5b4fc}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h3{margin:0 0 10px;font-size:15.5px}
+.card h4{margin:0 0 8px;font-size:14px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.btn{border:0;border-radius:10px;padding:9px 16px;font-weight:700;background:var(--blue);color:#fff;transition:filter .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn.block{width:100%;padding:12px}
+.btn.lg{padding:13px 22px;font-size:15.5px}
+.btn.ghost{background:var(--card);color:var(--blue);border:1px solid var(--blue-100)}
+.btn.green{background:var(--green)}
+.btn.red{background:var(--red)}
+.btn.dark{background:var(--navy)}
+.btn.light{background:var(--card);color:var(--accent-ink)}
+.btn.sm{padding:5px 11px;font-size:12.5px;border-radius:8px}
+.btn.danger-ghost{background:var(--card);color:var(--red);border:1px solid var(--err-line)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid var(--line2);border-radius:10px;padding:9px 11px;background:var(--card)}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue-100);border-color:var(--blue)}
+label.f{display:block;font-weight:700;font-size:12.5px;margin:10px 0 4px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.st-draft{background:var(--soft);color:var(--muted);border:1px dashed #94a3b8}
+.st-review{background:var(--st-review-bg);color:var(--st-review)}
+.st-progress{background:var(--blue-100);color:var(--st-prog)}
+.st-ready{background:var(--st-ready-bg);color:var(--st-ready)}
+.st-closed{background:var(--st-closed-bg);color:var(--ink2)}
+.st-cancel{background:var(--st-cancel-bg);color:var(--st-cancel)}
+.tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:6px;background:var(--soft);color:var(--muted);font-weight:700;white-space:nowrap}
+.tag.red{background:var(--red-50);color:var(--red)}
+.tag.amber{background:var(--amber-50);color:var(--amber)}
+.tag.blue{background:var(--blue-50);color:var(--blue)}
+.tag.green{background:var(--green-50);color:var(--green)}
+.tag.violet{background:var(--violet-50);color:var(--violet)}
+.banner{border-radius:12px;padding:10px 14px;font-size:13px}
+.banner.warn{background:var(--amber-50);border:1px solid var(--warn-line);color:var(--warn-ink)}
+.banner.info{background:var(--blue-50);border:1px solid var(--blue-100);color:var(--info-ink)}
+.banner.ok{background:var(--green-50);border:1px solid var(--ok-line);color:var(--ok-ink)}
+.banner.err{background:var(--red-50);border:1px solid var(--err-line);color:var(--err-ink)}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:5px 12px;font-size:13.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;font-weight:700}
+.choice:hover{border-color:var(--blue);background:var(--blue-50)}
+.choice .ic{font-size:24px;display:block}
+.choice small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.choice.wide{grid-column:1/-1;border-style:dashed;border-color:var(--hover-line);background:var(--blue-50)}
+.steps{display:flex;gap:5px}
+.steps div{flex:1;height:5px;border-radius:4px;background:var(--line)}
+.steps div.on{background:var(--blue)}
+.qa{font-size:13px;border-bottom:1px dashed var(--line);padding:7px 0;display:flex;gap:8px;align-items:flex-start}
+.qa .q{color:var(--muted);flex:1;min-width:0}
+.qa .a{font-weight:700}
+.qbox{background:var(--card);border:2px solid var(--blue-100);border-radius:14px;padding:16px}
+.qbox .qt{font-weight:800;font-size:16px;margin-bottom:12px}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opts button{background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:11px 12px;text-align:right;font-weight:600}
+.opts button:hover{border-color:var(--blue);background:var(--blue-50)}
+.timeline{display:flex;justify-content:space-between;position:relative}
+.timeline:before{content:"";position:absolute;top:10px;right:9%;left:9%;height:2px;background:var(--line)}
+.timeline div{flex:1;text-align:center;font-size:11.5px;color:var(--muted);position:relative}
+.timeline div b{display:block;width:22px;height:22px;border-radius:50%;background:var(--line2);margin:0 auto 4px;color:#fff;font-size:11px;line-height:22px}
+.timeline div.done b{background:var(--green)}
+.timeline div.cur b{background:var(--blue);box-shadow:0 0 0 4px var(--blue-100)}
+.timeline div.cur{color:var(--blue);font-weight:700}
+.req{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;background:var(--card)}
+.req.team{border-color:var(--blue-100);background:var(--blue-50)}
+.req .meta{font-size:11.5px;color:var(--muted)}
+.req .reply{margin-top:6px;padding:6px 9px;background:var(--soft);border-radius:8px;border-right:3px solid var(--green)}
+.files{list-style:none;padding:0;margin:0}
+.files li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.files li span:first-child{min-width:0;overflow-wrap:anywhere}
+.contract{border:1.5px solid var(--navy);border-radius:14px;padding:16px;background:var(--paper)}
+.contract .hd{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:10px}
+.contract .total{font-size:22px;font-weight:800;color:var(--accent-ink)}
+.pay-opts{display:flex;gap:8px;margin:10px 0}
+.pay-opts label{flex:1;border:1px solid var(--line2);border-radius:10px;padding:10px 4px;text-align:center;font-weight:800;cursor:pointer;background:var(--card);position:relative}
+.pay-opts input{position:absolute;opacity:0;pointer-events:none}
+.pay-opts label:has(input:checked){border-color:var(--blue);background:var(--blue-50);color:var(--blue)}
+.empty{text-align:center;color:var(--muted);padding:36px 12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.kpi b{display:block;font-size:24px;color:var(--accent-ink);font-variant-numeric:tabular-nums;line-height:1.3}
+.kpi span{font-size:12.5px;color:var(--muted)}
+.kpi.alert{border-color:var(--err-line);background:var(--red-50)}
+.kpi.alert b{color:var(--red)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.chips button.on{background:var(--navy);color:#fff;border-color:var(--accent-ink)}
+.t-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table.t{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+table.t th{background:var(--soft);text-align:right;padding:9px 12px;font-size:12px;color:var(--ink2);border-bottom:1px solid var(--line);white-space:nowrap}
+table.t td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t tr.click{cursor:pointer}
+table.t tr.click:hover td{background:var(--blue-50)}
+table.t tr.late td{background:var(--red-50)}
+table.t td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ai{border:1px dashed var(--violet);background:var(--violet-50);border-radius:14px;padding:14px}
+.ai h4{color:var(--violet);margin:0 0 6px}
+.mark{background:#fff;color:#1e3a8a;border-radius:9px;width:34px;height:34px;display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}
+.bell{position:relative}
+.bell i{position:absolute;top:-5px;left:-7px;background:var(--red);color:#fff;font-style:normal;font-size:10px;border-radius:9px;padding:0 5px;min-width:17px;line-height:16px;text-align:center}
+
+.site-h{background:var(--navy);color:#fff;position:sticky;top:env(safe-area-inset-top,0px);z-index:40;box-shadow:0 2px 10px rgba(16,24,40,.12)}
+.site-h .in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:18px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.brand b{display:block;font-size:19px;line-height:1.1}
+.brand small{display:block;font-size:11.5px;color:#a9c0f5}
+.site-nav{display:flex;gap:4px}
+.site-nav button{background:none;border:0;color:#c9d7fb;padding:7px 12px;border-radius:9px;font-weight:700}
+.site-nav button:hover{background:rgba(255,255,255,.08)}
+.site-nav button.on{background:rgba(255,255,255,.14);color:#fff}
+.site-tools{margin-inline-start:auto;display:flex;align-items:center;gap:8px}
+.icon-btn{background:rgba(255,255,255,.1);border:0;color:#fff;border-radius:10px;padding:7px 11px;font-weight:700;font-size:13px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--avatar-bg);color:var(--accent-ink);display:grid;place-items:center;font-weight:800}
+.site-main .in{max-width:1080px;margin:0 auto;padding-block:22px 40px}
+.hero{background:linear-gradient(160deg,var(--navy) 0%,#2449b5 100%);color:#fff;border-radius:20px;padding:30px;display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:center}
+.hero h1{font-size:30px;line-height:1.3;margin:0 0 10px;font-weight:800}
+.hero p{color:#d6e2ff;margin:0 0 18px;max-width:48ch}
+.how{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.how li{counter-increment:s;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;display:flex;gap:12px;align-items:center}
+.how li:before{content:counter(s);width:28px;height:28px;border-radius:50%;background:#fff;color:#1e3a8a;font-weight:800;display:grid;place-items:center;flex:none}
+.how b{display:block}
+.how span{font-size:12.5px;color:#c9d7fb}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 12px}
+.sec-h h2{margin:0;font-size:19px}
+.ogrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.ocard{display:flex;flex-direction:column;gap:6px;width:100%;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.ocard:hover{border-color:var(--hover-line);box-shadow:0 4px 14px rgba(37,99,235,.08)}
+.narrow{max-width:700px;margin:0 auto}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:16px;align-items:start}
+.draft-bar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:5}
+.bnav{display:none}
+.push{position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:max(16px,env(safe-area-inset-left,0px));width:min(360px,calc(100% - 32px));background:var(--toast-bg);color:#fff;border-radius:14px;padding:11px 14px;font-size:13px;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:80;cursor:pointer;animation:drop .3s ease}
+.push small{display:block;color:#94a3b8;font-size:11px}
+@keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+
+.con{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 40px)}
+.con-side{background:#0e1630;color:#c5cde0;padding:16px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow:auto}
+.con-side.lawyer{background:#13241f}
+.con-brand{display:flex;gap:10px;align-items:center;padding:4px 6px 14px}
+.con-brand b{color:#fff;display:block;font-size:17px;line-height:1.1}
+.con-brand small{font-size:11.5px;color:#8fa0c4}
+.who{background:rgba(255,255,255,.06);border-radius:12px;padding:10px;margin-bottom:10px}
+.who label{display:block;font-size:11px;color:#8fa0c4;margin-bottom:4px}
+.who select{background:#0b1226;color:#fff;border-color:#2c3a5e;font-size:13px;padding:6px}
+.con-side.lawyer .who select{background:#0d1a16;border-color:#2b4a40}
+.who .role{font-size:11.5px;color:#9db8f5;margin-top:6px}
+.con-side.lawyer .who .role{color:#7fd8b5}
+.con-nav{display:flex;flex-direction:column;gap:2px}
+.con-nav button{background:none;border:0;color:#c5cde0;text-align:right;padding:9px 10px;border-radius:9px;display:flex;justify-content:space-between;align-items:center;gap:6px;font-weight:600;white-space:nowrap}
+.con-nav button:hover{background:rgba(255,255,255,.07)}
+.con-nav button.on{background:var(--blue);color:#fff;font-weight:800}
+.con-side.lawyer .con-nav button.on{background:var(--green)}
+.con-nav button i{font-style:normal;background:var(--red);color:#fff;border-radius:9px;font-size:10.5px;padding:0 6px}
+.con-nav button.lock{opacity:.4}
+.con-foot{margin-top:auto;font-size:11px;color:#6b7a9c;padding:8px}
+.con-main{padding-block:20px 40px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));min-width:0;display:flex;flex-direction:column;gap:14px}
+.con-main h2{margin:0;font-size:20px}
+.a-grid{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;align-items:start}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.denied{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:40px;text-align:center;color:var(--muted)}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:12.5px;background:var(--card);cursor:pointer}
+.checks label:has(input:checked){border-color:var(--green);background:var(--green-50);color:var(--green);font-weight:700}
+.checks input{margin:0 0 0 4px}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:700}
+.switch input{width:18px;height:18px}
+
+.overlay{position:fixed;inset:0;background:rgba(16,24,40,.5);display:grid;place-items:center;z-index:100;padding:16px}
+.modal{background:var(--card);border-radius:16px;max-width:520px;width:100%;max-height:90vh;overflow:auto;padding:22px}
+.toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);left:max(16px,env(safe-area-inset-left,0px));background:var(--toast-bg);color:#fff;padding:10px 16px;border-radius:10px;z-index:200;font-size:13px;animation:drop .3s}
+.invoice table{width:100%;border-collapse:collapse;font-size:13px}
+.invoice td{padding:7px;border-bottom:1px solid var(--line)}
+.invoice td:last-child{font-variant-numeric:tabular-nums}
+
+@media (max-width:980px){
+  .cols,.a-grid{grid-template-columns:minmax(0,1fr)}
+  .hero{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .con{grid-template-columns:1fr}
+  .con-side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;padding:10px max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
+  .con-brand{padding:0}
+  .who{margin:0;padding:6px 8px;display:flex;gap:8px;align-items:center}
+  .who label,.con-foot{display:none}
+  .who .role{margin:0;white-space:nowrap}
+  .con-nav{flex-direction:row;overflow-x:auto;width:100%}
+}
+@media (max-width:760px){
+  .site-nav,.hide-sm{display:none}
+  .site-h .in{gap:10px}
+  .brand small{display:none}
+  .site-main .in{padding-block:14px 96px}
+  .hero{padding:20px;border-radius:16px}
+  .hero h1{font-size:23px}
+  .ogrid,.grid2.r{grid-template-columns:1fr}
+  .bnav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);z-index:40;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .bnav button{flex:1;background:none;border:0;padding:8px 0 9px;font-size:11.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px}
+  .bnav button b{font-size:19px;font-weight:400}
+  .bnav button.on{color:var(--blue);font-weight:800}
+  .draft-bar{top:calc(env(safe-area-inset-top,0px) + 56px)}
+  .kv{grid-template-columns:96px 1fr}
+  .demobar .clock{display:none}
+}
+
+/* قواعد التصميم: الشعار رأسي (الأيقونة فوق والاسم تحتها) والتوسيط افتراضي */
+.brand,.con-brand{flex-direction:column;align-items:center;gap:4px;text-align:center}
+.brand .mark,.con-brand .mark{width:30px;height:30px;font-size:16px}
+.brand b{font-size:16px}.brand small{font-size:10.5px}
+.con-brand{padding:4px 6px 12px}
+#app{text-align:center}
+#app h1,#app h2,#app h3,#app h4,.sec-h{text-align:center}
+.sec-h{flex-direction:column;align-items:center;gap:4px}
+.hero p{margin-inline:auto}
+.ocard{text-align:center;align-items:center}
+#app table,#app input,#app textarea,#app select,#app .kv,#app .field,#app label,#app .con-nav,#app .timeline,#app .msgs{text-align:right}
+.modal-box,.modal{text-align:center}
+.modal input,.modal textarea,.modal select,.modal table{text-align:right}
+.demobar .in{justify-content:center}
+.demobar .clock{margin-inline-start:0}
+.theme-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:10px;padding:4px 12px;font-weight:700;font-size:12.5px}
+
+/* قاعدة التصميم: تبويبات سفلية على الجوال، والتبويب المفتوح بارز ومرتفع للأعلى */
+.bnav button{position:relative;min-width:0}
+.bnav button b{width:42px;height:32px;display:grid;place-items:center;border-radius:50%;transition:transform .2s,background .2s}
+.bnav button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px}
+.bnav button.on b{width:52px;height:52px;transform:translateY(-20px);margin-bottom:-20px;background:var(--blue);color:#fff;font-size:22px;box-shadow:0 8px 18px rgba(37,99,235,.35);border:4px solid var(--card)}
+.bnav.lawyer button.on b{background:var(--green);box-shadow:0 8px 18px rgba(15,159,110,.35)}
+.bnav button i{position:absolute;top:2px;left:calc(50% - 22px);font-style:normal;background:var(--red);color:#fff;border-radius:9px;font-size:10px;padding:0 5px;line-height:16px}
+.bnav button.on i{top:-14px}
+.bnav button.lock{opacity:.45}
+.bnav{box-shadow:0 -4px 16px rgba(16,24,40,.08)}
+.more-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.more-list button{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;font-size:12.5px}
+.more-list button b{font-size:22px;font-weight:400}
+.more-list button.on{border-color:var(--blue);color:var(--blue)}
+@media (max-width:980px){
+  .con-side .con-nav{display:none}
+  .con-main{padding-bottom:110px}
+  .con .bnav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);z-index:40;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .con .bnav button{flex:1;background:none;border:0;padding:8px 0 9px;font-size:11.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px}
+  .con .bnav button b{font-size:19px;font-weight:400}
+  .con .bnav button.on{color:var(--blue);font-weight:800}
+  .con .bnav.lawyer button.on{color:var(--green)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="demobar gutter"><div class="in">
+  <span class="lbl">عرض تجريبي — اختر التجربة:</span>
+  <div class="seg" id="portalSeg">
+    <button data-p="client" onclick="setPortal('client')">👤 العميل</button>
+    <button data-p="lawyer" onclick="setPortal('lawyer')">⚖️ المحامي</button>
+    <button data-p="admin" onclick="setPortal('admin')">🛡️ الإدارة</button>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل الوضع الداكن والفاتح"></button>
+  <span class="clock num" id="clock"></span>
+</div></div>
+<div id="app"></div>
+<div id="modalRoot"></div>
+
+<script>
+/* الوضع الداكن/الفاتح: يتبع الجهاز افتراضياً، ويحفظ اختيار المستخدم */
+const THEME_KEY='khabeer_theme';
+function savedTheme(){try{return localStorage.getItem(THEME_KEY)}catch(e){return null}}
+function sysDark(){return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches}
+function curTheme(){return document.documentElement.dataset.theme||(sysDark()?'dark':'light')}
+function paintThemeBtn(){const b=document.getElementById('themeBtn');if(b)b.textContent=curTheme()==='dark'?'☀️ الوضع الفاتح':'🌙 الوضع الداكن'}
+function toggleTheme(){const t=curTheme()==='dark'?'light':'dark';document.documentElement.dataset.theme=t;try{localStorage.setItem(THEME_KEY,t)}catch(e){}paintThemeBtn()}
+(function(){const t=savedTheme();if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;paintThemeBtn();if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',paintThemeBtn)})();
+/* منصة خبير — النسخة التجريبية (MVP): ثلاث بوابات فوق بيانات واحدة
+   العميل (موقع متجاوب قابل للتثبيت) • المحامي • الإدارة. البيانات محفوظة في المتصفح لأغراض العرض. */
+const HOUR = 36e5, DAY = 24 * HOUR, DRAFT_TTL = 168 * HOUR, VAT = 0.15;
+const KEY = 'khabeer_mvp_v2';
+
+const ST = {
+  DRAFT: ['مسودة', 'st-draft'], UNDER_REVIEW: ['قيد المراجعة', 'st-review'], IN_PROGRESS: ['قيد التنفيذ', 'st-progress'],
+  READY_DELIVERY: ['جاهز للتحميل', 'st-ready'], CLOSED: ['مغلق', 'st-closed'], CANCELLED: ['ملغى', 'st-cancel'],
+};
+const ROLES = { reception: 'موظف الاستقبال', specialist: 'محامٍ داخلي', collaborator: 'محامٍ متعاون', ceo: 'المدير التنفيذي' };
+const LAWYER_ROLES = ['specialist', 'collaborator'], ADMIN_ROLES = ['reception', 'ceo'];
+const PERMS = {
+  reception:    ['intake', 'assign'],
+  specialist:   ['intake', 'route', 'deliver', 'unlock'],
+  collaborator: ['route', 'deliver', 'unlock'],
+  ceo:          ['intake', 'assign', 'route', 'deliver', 'unlock', 'approve', 'reassign', 'audit', 'users', 'decide', 'finance', 'lawyers'],
+};
+
+const SERVICES = [
+  { k: 'problem', t: 'لدي مشكلة', d: 'لا أعرف الخدمة المناسبة', i: '🧭' },
+  { k: 'consult', t: 'استشارة حقوقية', d: 'رأي في مسألة محددة', i: '💬' },
+  { k: 'contract', t: 'صياغة / مراجعة عقد', d: 'عقود ومستندات', i: '📝' },
+  { k: 'memo', t: 'مذكرة أو لائحة', d: 'لائحة دعوى، اعتراض، رد', i: '📄' },
+  { k: 'represent', t: 'ترافع وتمثيل', d: 'متابعة قضية', i: '⚖️' },
+  { k: 'collect', t: 'تحصيل حقوق مالية', d: 'مبالغ مستحقة', i: '💰' },
+];
+const CATS = [
+  { k: 'labor', t: 'عمالي', i: '👷' }, { k: 'commercial', t: 'تجاري', i: '🏢' }, { k: 'realestate', t: 'عقاري', i: '🏠' },
+  { k: 'family', t: 'أحوال شخصية', i: '👪' }, { k: 'admin', t: 'إداري / حكومي', i: '🏛️' },
+];
+const catLabel = k => k === 'free' ? 'غير مصنّف (كتابة حرة)' : (CATS.find(c => c.k === k) || {}).t || '—';
+const svcLabel = k => (SERVICES.find(s => s.k === k) || {}).t || '—';
+
+/* الأسئلة المتدرجة: يظهر السؤال فقط إذا تحقق شرطه، ويتوقف المعالج عند اكتمال البيانات اللازمة */
+const Q = {
+  labor: [
+    { k: 'employed', t: 'هل ما زلت على رأس العمل لدى الجهة؟', type: 'choice', o: ['نعم', 'لا'] },
+    { k: 'endReason', t: 'كيف انتهت علاقة العمل؟', type: 'choice', o: ['فصل من صاحب العمل', 'استقالة', 'انتهاء مدة العقد'], when: a => a.employed === 'لا' },
+    { k: 'subject', t: 'ما طبيعة مطالبتك؟', type: 'choice', o: ['أجور متأخرة', 'مكافأة نهاية الخدمة', 'تعويض عن فصل', 'نقل خدمات / إخلاء طرف', 'أخرى'] },
+    { k: 'months', t: 'كم عدد أشهر الأجور المتأخرة؟', type: 'number', when: a => a.subject === 'أجور متأخرة' },
+    { k: 'otherParty', t: 'ما اسم جهة العمل (الطرف الآخر)؟', type: 'text' },
+    { k: 'amount', t: 'كم المبلغ التقريبي المطالب به (ريال)؟', type: 'number', optional: true, when: a => a.subject !== 'نقل خدمات / إخلاء طرف' },
+    { k: 'date', t: 'متى بدأت المشكلة أو انتهت العلاقة؟', type: 'date' },
+    { k: 'prior', t: 'هل سبق أن تقدمت بشكوى أو طلب تسوية ودية؟', type: 'choice', o: ['نعم', 'لا'], when: (a, o) => o.service !== 'consult' },
+  ],
+  commercial: [
+    { k: 'subject', t: 'ما نوع المسألة التجارية؟', type: 'choice', o: ['دين / مبلغ مستحق', 'نزاع شراكة', 'عقد توريد أو خدمات', 'أخرى'] },
+    { k: 'role', t: 'ما صفتك في المسألة؟', type: 'choice', o: ['دائن / مطالِب', 'مدين / مطالَب', 'شريك'] },
+    { k: 'otherParty', t: 'من هو الطرف الآخر (اسم الشخص أو المنشأة)؟', type: 'text' },
+    { k: 'written', t: 'هل يوجد عقد أو مستند مكتوب؟', type: 'choice', o: ['نعم', 'لا', 'لا أعلم'] },
+    { k: 'amount', t: 'ما قيمة المبلغ محل النزاع (ريال)؟', type: 'number', optional: true },
+    { k: 'date', t: 'متى نشأ الالتزام أو بدأ النزاع؟', type: 'date' },
+  ],
+  realestate: [
+    { k: 'subject', t: 'ما نوع المسألة العقارية؟', type: 'choice', o: ['إيجار', 'بيع وشراء', 'مقاولات', 'أخرى'] },
+    { k: 'role', t: 'ما صفتك؟', type: 'choice', o: ['مالك / مؤجر', 'مستأجر'], when: a => a.subject === 'إيجار' },
+    { k: 'ejar', t: 'هل العقد موثق في منصة إيجار؟', type: 'choice', o: ['نعم', 'لا', 'لا أعلم'], when: a => a.subject === 'إيجار' },
+    { k: 'otherParty', t: 'من هو الطرف الآخر؟', type: 'text' },
+    { k: 'amount', t: 'ما المبلغ محل النزاع (ريال)؟', type: 'number', optional: true },
+    { k: 'date', t: 'متى بدأت المشكلة؟', type: 'date' },
+  ],
+  family: [
+    { k: 'subject', t: 'ما موضوع المسألة؟', type: 'choice', o: ['نفقة', 'حضانة / زيارة', 'طلاق / خلع', 'إرث وتركات', 'أخرى'] },
+    { k: 'otherParty', t: 'ما صلة الطرف الآخر بك؟', type: 'text' },
+    { k: 'children', t: 'هل يوجد أبناء قُصّر متعلقون بالمسألة؟', type: 'choice', o: ['نعم', 'لا'], when: a => ['نفقة', 'حضانة / زيارة', 'طلاق / خلع'].includes(a.subject) },
+    { k: 'amount', t: 'ما المبلغ أو قيمة التركة التقريبية (ريال)؟', type: 'number', optional: true, when: a => ['نفقة', 'إرث وتركات'].includes(a.subject) },
+    { k: 'date', t: 'متى بدأت المشكلة؟', type: 'date' },
+  ],
+  admin: [
+    { k: 'subject', t: 'ما نوع المسألة؟', type: 'choice', o: ['قرار إداري', 'مخالفة / غرامة', 'ترخيص', 'أخرى'] },
+    { k: 'otherParty', t: 'ما الجهة الحكومية المعنية؟', type: 'text' },
+    { k: 'amount', t: 'كم قيمة المخالفة أو الغرامة (ريال)؟', type: 'number', when: a => a.subject === 'مخالفة / غرامة' },
+    { k: 'date', t: 'ما تاريخ القرار أو الإبلاغ به؟', type: 'date' },
+    { k: 'objected', t: 'هل قدمت اعتراضاً أو تظلماً سابقاً؟', type: 'choice', o: ['نعم', 'لا'] },
+  ],
+  contract: [
+    { k: 'subject', t: 'ما نوع العقد؟', type: 'choice', o: ['عقد عمل', 'عقد شراكة', 'عقد توريد / خدمات', 'عقد إيجار', 'أخرى'] },
+    { k: 'task', t: 'ما المطلوب؟', type: 'choice', o: ['صياغة عقد جديد', 'مراجعة مسودة موجودة'] },
+    { k: 'otherParty', t: 'من هو الطرف الآخر في العقد؟', type: 'text' },
+    { k: 'amount', t: 'ما القيمة التقريبية للعقد (ريال)؟', type: 'number', optional: true },
+    { k: 'date', t: 'متى الموعد المتوقع للتوقيع؟', type: 'date', optional: true },
+  ],
+  free: [
+    { k: 'otherParty', t: 'من هو الطرف الآخر في المشكلة (شخص، شركة، جهة)؟', type: 'text' },
+    { k: 'hasMoney', t: 'هل تتعلق المشكلة بمبلغ مالي؟', type: 'choice', o: ['نعم', 'لا'] },
+    { k: 'amount', t: 'كم المبلغ التقريبي (ريال)؟', type: 'number', optional: true, when: a => a.hasMoney === 'نعم' },
+    { k: 'date', t: 'متى بدأت المشكلة؟', type: 'date' },
+  ],
+};
+const qset = o => o.service === 'contract' ? Q.contract : (Q[o.category] || Q.free);
+const nextQ = o => qset(o).find(q => !(q.k in o.answers) && (!q.when || q.when(o.answers, o)));
+const qText = (o, k) => (qset(o).find(q => q.k === k) || {}).t || k;
+
+/* ================= التخزين والأدوات ================= */
+let S;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() {
+  try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
+  if (!S || S.v !== 2) S = seed();
+}
+let PORTAL = 'client';
+const now = () => Date.now() + (S.settings.offset || 0);
+const nid = p => p + (++S.seq);
+function me() {
+  const roles = PORTAL === 'lawyer' ? LAWYER_ROLES : ADMIN_ROLES;
+  const id = PORTAL === 'lawyer' ? S.curLawyer : S.curAdmin;
+  const pool = S.users.filter(u => roles.includes(u.role));
+  return pool.find(u => u.id === id) || pool[0];
+}
+const can = p => { const u = me(); return !!u && PERMS[u.role].includes(p); };
+const user = id => S.users.find(u => u.id === id);
+const uname = id => (user(id) || {}).name || 'غير مسند';
+const lawyers = () => S.users.filter(u => LAWYER_ROLES.includes(u.role));
+const order = id => S.orders.find(o => o.id === id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = n => Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ر.س';
+const dtf = new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-latn', { dateStyle: 'medium', timeStyle: 'short' });
+const fdt = t => t ? dtf.format(new Date(t)) : '—';
+const ago = t => { const h = Math.floor((now() - t) / HOUR); return h < 1 ? 'الآن' : h < 24 ? `منذ ${h} ساعة` : `منذ ${Math.floor(h / 24)} يوم`; };
+const pill = s => `<span class="pill ${ST[s][1]}">${ST[s][0]}</span>`;
+const commission = () => (S.settings.commission || 0) / 100;
+
+function seed() {
+  const t = Date.now();
+  const base = {
+    v: 2, seq: 1007, invoices: 2,
+    settings: { offset: 0, delayHours: 48, commission: 20 },
+    users: [
+      { id: 'u1', name: 'سارة القحطاني', role: 'reception' },
+      { id: 'u2', name: 'أ. خالد العتيبي', role: 'specialist', specialties: ['labor', 'commercial'], license: '45/1231', active: true },
+      { id: 'u3', name: 'أ. منى الشهري', role: 'specialist', specialties: ['family', 'realestate'], license: '45/2210', active: true },
+      { id: 'u5', name: 'أ. سامي الحربي', role: 'collaborator', specialties: ['commercial', 'admin'], license: '44/0871', active: true },
+      { id: 'u4', name: 'المدير التنفيذي', role: 'ceo' },
+    ],
+    curLawyer: 'u2', curAdmin: 'u4',
+    client: { id: 'c1', name: 'عبدالله', fileNo: 'KF-0001' },
+    orders: [], audit: [], notifs: [], snotifs: [], complaints: [],
+  };
+  const mk = o => Object.assign({
+    id: '', clientId: 'c1', status: 'UNDER_REVIEW', service: 'problem', category: 'free', freeText: '', notes: '',
+    answers: {}, hist: [], step: 5, docs: [], requests: [], internal: [], revisions: [],
+    contract: null, payment: null, ceoApproved: false, result: null, freeAnswer: null, payout: null,
+    assignee: null, assignAccepted: false, triaged: false, uploadUnlocked: false,
+    createdAt: t, submittedAt: t, lastActionAt: t, updatedAt: t,
+  }, o);
+  base.orders.push(
+    mk({ id: 'KH-1001', category: 'labor', createdAt: t - 5 * HOUR, submittedAt: t - 5 * HOUR, lastActionAt: t - 5 * HOUR, updatedAt: t - 5 * HOUR,
+      answers: { employed: 'لا', endReason: 'فصل من صاحب العمل', subject: 'أجور متأخرة', months: '3', otherParty: 'شركة الأفق للتجارة', amount: '18000', date: '2026-09-15', prior: 'لا' },
+      notes: 'تم فصلي دون إنذار ولم أستلم رواتب آخر ثلاثة أشهر.', docs: [{ name: 'عقد_العمل.pdf', size: 245000, at: t - 5 * HOUR, by: 'client' }] }),
+    mk({ id: 'KH-1002', category: 'realestate', service: 'collect', createdAt: t - 3 * DAY, submittedAt: t - 3 * DAY, lastActionAt: t - DAY, updatedAt: t - DAY,
+      answers: { subject: 'إيجار', role: 'مالك / مؤجر', ejar: 'نعم', otherParty: 'مستأجر الشقة رقم 4', amount: '24000', date: '2026-06-01' },
+      assignee: 'u3', assignAccepted: true, triaged: true,
+      contract: { scope: 'دراسة عقد الإيجار، توجيه إنذار رسمي للمستأجر، وإعداد طلب التنفيذ عبر محكمة التنفيذ بموجب عقد الإيجار الموثق.', fee: 2500, days: 14, issuedAt: t - DAY, issuedBy: 'u3', acceptedAt: null } }),
+    mk({ id: 'KH-1003', category: 'commercial', service: 'memo', status: 'IN_PROGRESS', createdAt: t - 9 * DAY, submittedAt: t - 9 * DAY, lastActionAt: t - 4 * DAY, updatedAt: t - 4 * DAY,
+      answers: { subject: 'دين / مبلغ مستحق', role: 'دائن / مطالِب', otherParty: 'مؤسسة البناء الحديث', written: 'نعم', amount: '65000', date: '2026-03-10' },
+      assignee: 'u5', assignAccepted: true, triaged: true, ceoApproved: true,
+      contract: { scope: 'إعداد لائحة دعوى مطالبة مالية أمام المحكمة التجارية مع حافظة المستندات.', fee: 4000, days: 10, issuedAt: t - 7 * DAY, issuedBy: 'u5', acceptedAt: t - 6 * DAY },
+      payment: { method: 'مدى', amount: 4600, at: t - 6 * DAY, invoice: 'INV-2026-0001' } }),
+    mk({ id: 'KH-1004', category: 'family', service: 'consult', status: 'CLOSED', createdAt: t - 20 * DAY, submittedAt: t - 20 * DAY, lastActionAt: t - 19 * DAY, updatedAt: t - 19 * DAY,
+      answers: { subject: 'حضانة / زيارة', otherParty: 'طليقتي', children: 'نعم', date: '2026-07-01' }, assignee: 'u3', assignAccepted: true, triaged: true,
+      freeAnswer: { text: 'يحق لك طلب تنظيم الزيارة عبر محكمة الأحوال الشخصية إلكترونياً من خلال بوابة ناجز دون الحاجة لتوكيل محامٍ، والمسألة لا تتطلب عملاً إضافياً منا. ننصحك بإرفاق صك الطلاق وشهادات ميلاد الأبناء.', at: t - 19 * DAY, by: 'u3' } }),
+    mk({ id: 'KH-1005', status: 'DRAFT', category: 'admin', step: 3, createdAt: t - 150 * HOUR, submittedAt: null, lastActionAt: t - 150 * HOUR, updatedAt: t - 150 * HOUR,
+      answers: { subject: 'مخالفة / غرامة' }, hist: ['subject'] }),
+    mk({ id: 'KH-1006', category: 'admin', service: 'problem', createdAt: t - 20 * HOUR, submittedAt: t - 20 * HOUR, lastActionAt: t - 2 * HOUR, updatedAt: t - 2 * HOUR,
+      answers: { subject: 'قرار إداري', otherParty: 'أمانة المنطقة', date: '2026-10-20', objected: 'لا' }, notes: 'صدر قرار بإغلاق المحل بسبب مخالفة لم أُبلَّغ بها.',
+      assignee: 'u2', assignAccepted: false, triaged: true }),
+    mk({ id: 'KH-1007', category: 'labor', service: 'contract', status: 'CLOSED', createdAt: t - 30 * DAY, submittedAt: t - 30 * DAY, lastActionAt: t - 22 * DAY, updatedAt: t - 22 * DAY,
+      answers: { subject: 'عقد عمل', task: 'صياغة عقد جديد', otherParty: 'موظف جديد' }, assignee: 'u2', assignAccepted: true, triaged: true, ceoApproved: true,
+      contract: { scope: 'صياغة عقد عمل محدد المدة متوافق مع نظام العمل ولائحته التنفيذية.', fee: 1500, days: 5, issuedAt: t - 29 * DAY, issuedBy: 'u2', acceptedAt: t - 29 * DAY },
+      payment: { method: 'Visa', amount: 1725, at: t - 29 * DAY, invoice: 'INV-2026-0002' },
+      result: { files: ['عقد_عمل_نهائي.docx'], note: 'تم إعداد العقد وفق المتفق عليه.', at: t - 23 * DAY, by: 'u2' } }),
+  );
+  base.audit.push(
+    { at: t - 9 * DAY, user: 'العميل', action: 'إنشاء طلب', orderId: 'KH-1003', details: 'إرسال الطلب' },
+    { at: t - 8 * DAY, user: 'سارة القحطاني', action: 'فرز وإسناد', orderId: 'KH-1003', details: 'إلى أ. سامي الحربي' },
+    { at: t - 7 * DAY, user: 'أ. سامي الحربي', action: 'إصدار عقد', orderId: 'KH-1003', details: 'أتعاب 4,000 ر.س — 10 أيام' },
+    { at: t - 6 * DAY, user: 'العميل', action: 'اعتماد عقد', orderId: 'KH-1003', details: '' },
+    { at: t - 6 * DAY, user: 'العميل', action: 'دفع', orderId: 'KH-1003', details: 'مدى — 4,600 ر.س — INV-2026-0001' },
+    { at: t - 4 * DAY, user: 'المدير التنفيذي', action: 'اعتماد بدء التنفيذ', orderId: 'KH-1003', details: 'CEO Gate' },
+    { at: t - DAY, user: 'أ. منى الشهري', action: 'إصدار عقد', orderId: 'KH-1002', details: 'أتعاب 2,500 ر.س — 14 يوم' },
+    { at: t - 5 * HOUR, user: 'العميل', action: 'إنشاء طلب', orderId: 'KH-1001', details: 'إرسال الطلب' },
+    { at: t - 2 * HOUR, user: 'سارة القحطاني', action: 'فرز وإسناد', orderId: 'KH-1006', details: 'إلى أ. خالد العتيبي' },
+  );
+  base.notifs.push({ id: 'n1', text: 'صدر عقد طلبك KH-1002 — يرجى مراجعته واعتماده', orderId: 'KH-1002', at: t - DAY, read: false });
+  base.snotifs.push(
+    { id: 's1', uid: 'u2', text: 'أُسند إليك الطلب KH-1006 — بانتظار قبولك', orderId: 'KH-1006', at: t - 2 * HOUR, read: false },
+    { id: 's2', uid: 'u1', text: 'طلب جديد KH-1001 بانتظار الفرز والإسناد', orderId: 'KH-1001', at: t - 5 * HOUR, read: false },
+  );
+  return base;
+}
+
+/* ================= منطق الأعمال ================= */
+function audit(action, orderId, details = '', who) { S.audit.push({ at: now(), user: who || (me() || {}).name || 'النظام', action, orderId, details }); }
+let pushQueue = null;
+function push(text, orderId) { const n = { id: nid('n'), text, orderId, at: now(), read: false }; S.notifs.push(n); if (PORTAL === 'client') pushQueue = n; }
+function notifyStaff(uid, text, orderId) { if (uid) S.snotifs.push({ id: nid('s'), uid, text, orderId, at: now(), read: false }); }
+function notifyRole(role, text, orderId) { S.users.filter(u => u.role === role).forEach(u => notifyStaff(u.id, text, orderId)); }
+function notifyTeam(o, text) { o.assignee ? notifyStaff(o.assignee, text, o.id) : notifyRole('reception', text, o.id); }
+function touch(o) { o.lastActionAt = now(); o.updatedAt = now(); }
+function purgeDrafts() {
+  const before = S.orders.length;
+  S.orders = S.orders.filter(o => !(o.status === 'DRAFT' && now() - o.createdAt > DRAFT_TTL));
+  if (S.orders.length !== before) {
+    audit('حذف مسودة آلياً', '—', `حُذفت ${before - S.orders.length} مسودة تجاوزت 168 ساعة`, 'النظام');
+    if (CV.screen === 'wizard' && !order(CV.orderId)) CV.screen = 'home';
+  }
+}
+function stage(o) {
+  if (o.status === 'UNDER_REVIEW') {
+    if (o.freeAnswer) return { t: 'تمت الإجابة', who: 'none' };
+    if (!o.contract) {
+      if (!o.assignee) return { t: 'لدى الإدارة للفرز والإسناد', who: 'admin' };
+      if (!o.assignAccepted) return { t: 'بانتظار قبول المحامي للإسناد', who: 'lawyer' };
+      return { t: 'لدى المحامي للدراسة الأولية', who: 'lawyer' };
+    }
+    if (!o.contract.acceptedAt) return { t: 'بانتظار اعتماد العميل للعقد', who: 'client' };
+    if (!o.payment) return { t: 'بانتظار سداد الأتعاب', who: 'client' };
+    return { t: 'بانتظار اعتماد المدير التنفيذي', who: 'ceo' };
+  }
+  if (o.status === 'IN_PROGRESS') return { t: o.revisions.length ? `تنفيذ التعديل رقم ${o.revisions.length}` : 'العمل جارٍ لدى المحامي', who: 'lawyer' };
+  if (o.status === 'READY_DELIVERY') return { t: 'بانتظار استلام العميل', who: 'client' };
+  return { t: '', who: 'none' };
+}
+const isLate = o => ['admin', 'lawyer', 'ceo'].includes(stage(o).who) && now() - o.lastActionAt > S.settings.delayHours * HOUR;
+const openClientReqs = o => o.requests.filter(r => r.from === 'client' && r.status === 'open');
+const openTeamReqs = o => o.requests.filter(r => r.from === 'team' && r.status === 'open');
+const clientNeedsAction = o => stage(o).who === 'client' || openTeamReqs(o).length > 0;
+const canClientUpload = o => o.status === 'DRAFT' || (o.status === 'UNDER_REVIEW' && !o.payment) || o.uploadUnlocked;
+const lawyerNeedsAction = o => o.assignAccepted && (stage(o).who === 'lawyer' || openClientReqs(o).length > 0);
+const activeLoad = uid => S.orders.filter(o => o.assignee === uid && ['UNDER_REVIEW', 'IN_PROGRESS', 'READY_DELIVERY'].includes(o.status) && !o.freeAnswer).length;
+function summary(o) {
+  const a = o.answers;
+  return { otherParty: a.otherParty || '', subject: a.subject || (o.freeText ? o.freeText.slice(0, 90) : ''), amount: a.amount ? money(a.amount) : '', date: a.date || '' };
+}
+const orderTitle = o => { const s = summary(o); return `${catLabel(o.category)}${s.subject ? ' — ' + s.subject.slice(0, 40) : ''}`; };
+function earning(o) {
+  if (!o.contract || !o.payment) return null;
+  const fee = o.contract.fee, com = fee * commission();
+  const status = o.status === 'CANCELLED' ? 'ملغاة' : o.status !== 'CLOSED' ? 'معلّقة' : o.payout ? 'محوّلة' : 'مستحقة';
+  return { fee, com, net: fee - com, status };
+}
+const earnTag = s => `<span class="tag ${s === 'محوّلة' ? 'green' : s === 'مستحقة' ? 'blue' : s === 'ملغاة' ? 'red' : 'amber'}">${s}</span>`;
+
+function aiAssist(o) {
+  const txt = [o.freeText, o.notes, ...Object.values(o.answers)].join(' ');
+  const rules = [
+    ['labor', /عمل|راتب|رواتب|أجر|أجور|فصل|كفيل|مكافأة|نهاية الخدمة|إخلاء طرف/g],
+    ['realestate', /إيجار|ايجار|عقار|شقة|مستأجر|مؤجر|أرض|مقاول|صك/g],
+    ['commercial', /شركة|شريك|شراكة|توريد|فاتورة|دين|تجار|مؤسسة|سجل تجاري|شيك/g],
+    ['family', /طلاق|خلع|نفقة|حضانة|زوج|إرث|ورث|تركة|زيارة|طليق/g],
+    ['admin', /وزارة|بلدية|أمانة|قرار|مخالفة|غرامة|ترخيص|حكومي|هيئة|إغلاق/g],
+  ];
+  const scores = rules.map(([k, re]) => [k, (txt.match(re) || []).length]).sort((a, b) => b[1] - a[1]);
+  const top = scores[0][1] > 0 ? scores[0][0] : null;
+  const route = {
+    labor: 'التسوية الودية عبر منصة «ودّي» ثم المحكمة العمالية',
+    realestate: o.answers.ejar === 'نعم' ? 'محكمة التنفيذ مباشرة (عقد إيجار موثق = سند تنفيذي)' : 'المحكمة العامة / مركز التحكيم العقاري',
+    commercial: 'المحكمة التجارية (مع التحقق من شرط التحكيم في العقد)',
+    family: 'محكمة الأحوال الشخصية عبر «ناجز»',
+    admin: 'التظلم أمام الجهة ثم المحكمة الإدارية ضمن المدد النظامية',
+  };
+  const amounts = (txt.match(/\d[\d,]{2,}/g) || []).map(x => x.replace(/,/g, ''));
+  const s = summary(o), missing = [];
+  if (!s.otherParty) missing.push('الطرف الآخر');
+  if (!s.date) missing.push('التاريخ');
+  if (!o.docs.length) missing.push('مستندات داعمة');
+  const flags = [];
+  if (o.answers.date) {
+    const days = (now() - new Date(o.answers.date).getTime()) / DAY;
+    if (o.category === 'labor' && days > 300) flags.push('⚠️ تحقق من مدة سماع الدعوى العمالية (12 شهراً من انتهاء العلاقة)');
+    if (o.category === 'admin' && days > 50) flags.push('⚠️ تحقق من مدة التظلم/الاعتراض (60 يوماً)');
+  }
+  return { suggested: top, mismatch: top && o.category !== 'free' && top !== o.category, route: route[top || o.category] || 'يحدده المحامي', amounts, missing, flags };
+}
+function recommend(o) {
+  const cat = o.category !== 'free' ? o.category : aiAssist(o).suggested;
+  return lawyers().filter(u => u.active !== false)
+    .map(u => ({ u, match: (u.specialties || []).includes(cat), load: activeLoad(u.id) }))
+    .sort((a, b) => (b.match - a.match) || (a.load - b.load));
+}
+
+/* ================= بوابة العميل: موقع متجاوب ================= */
+const CV = { screen: 'home', orderId: null, reviseOpen: false };
+const CNAV = [['home', 'طلباتي', '🏠', 'طلباتي'], ['file', 'ملفي الحقوقي', '🗂️', 'ملفي'], ['complaints', 'الشكاوى والاقتراحات', '📮', 'الشكاوى'], ['notifs', 'الإشعارات', '🔔', 'الإشعارات']];
+function siteShell(body) {
+  const unread = S.notifs.filter(n => !n.read).length;
+  return `<header class="site-h"><div class="in gutter">
+      <a class="brand" href="#client" onclick="C.go('home');return false"><span class="mark">خ</span><span><b>خبير</b><small>المكتب الحقوقي الرقمي</small></span></a>
+      <nav class="site-nav">${CNAV.slice(0, 3).map(([k, t]) => `<button class="${CV.screen === k ? 'on' : ''}" onclick="C.go('${k}')">${t}</button>`).join('')}</nav>
+      <div class="site-tools">
+        <button class="icon-btn" onclick="showInstall()" aria-label="تثبيت التطبيق">📲<span class="hide-sm"> تثبيت التطبيق</span></button>
+        <button class="icon-btn bell" onclick="C.go('notifs')" aria-label="الإشعارات">🔔${unread ? `<i>${unread}</i>` : ''}</button>
+        <span class="avatar" title="${esc(S.client.name)}">${esc(S.client.name[0])}</span>
+      </div></div></header>
+    <main class="site-main"><div class="in gutter">${body}</div></main>
+    <nav class="bnav">${CNAV.map(([k, , i, s]) => `<button class="${CV.screen === k ? 'on' : ''}" onclick="C.go('${k}')"><b>${i}</b><span>${s}</span></button>`).join('')}</nav>
+    ${pushQueue ? `<div class="push" onclick="C.openNotif('${pushQueue.id}')">🔔 ${esc(pushQueue.text)}<small>خبير • الآن</small></div>` : ''}`;
+}
+function renderClient() {
+  let body;
+  switch (CV.screen) {
+    case 'wizard': body = clientWizard(); break;
+    case 'order': body = clientOrder(); break;
+    case 'submitted': body = `<div class="narrow card" style="text-align:center;padding:36px 22px;margin-top:20px">
+        <div style="font-size:54px">✅</div><h2 style="margin:6px 0">تم استلام طلبك</h2>
+        <p class="banner ok" style="text-align:right">«تم استلام طلبك، وجارٍ مراجعته من فريق خبير، وسيتم التواصل معك قريبًا.»</p>
+        <p class="small muted">رقم الطلب: <b class="num">${esc(CV.orderId)}</b></p>
+        <button class="btn lg" onclick="C.openOrder('${CV.orderId}')">متابعة الطلب</button></div>`; break;
+    case 'file': body = clientFile(); break;
+    case 'complaints': body = clientComplaints(); break;
+    case 'notifs': body = clientNotifs(); break;
+    default: body = clientHome();
+  }
+  return siteShell(body);
+}
+function clientHome() {
+  const drafts = S.orders.filter(o => o.status === 'DRAFT');
+  const list = S.orders.filter(o => o.status !== 'DRAFT').sort((a, b) => b.updatedAt - a.updatedAt);
+  return `<section class="hero">
+      <div><h1>اعرض مشكلتك كما هي.. ونتولى الباقي</h1>
+        <p>مرحباً ${esc(S.client.name)}. لا تحتاج لمعرفة نوع الخدمة أو الجهة المختصة؛ فريق خبير يدرس طلبك ويحدد مساره النظامي الصحيح ويتولى الحل.</p>
+        <button class="btn light lg" onclick="C.newOrder()">+ طلب جديد</button></div>
+      <ol class="how">
+        <li><div><b>اعرض مشكلتك</b><span>أسئلة قصيرة متدرجة بحسب حالتك</span></div></li>
+        <li><div><b>ندرسها ونحدد المسار</b><span>إجابة مجانية أو عرض واضح بالأتعاب والمدة</span></div></li>
+        <li><div><b>ننجزها لك</b><span>تتابع كل خطوة وتستلم النتيجة هنا</span></div></li>
+      </ol></section>
+    ${drafts.map(d => {
+      const left = Math.max(0, Math.ceil((d.createdAt + DRAFT_TTL - now()) / HOUR));
+      return `<div class="banner warn row between" style="margin-top:14px"><span>📝 لديك مسودة غير مرسلة — تُحذف تلقائياً خلال <b class="num">${left} ساعة</b></span>
+        <button class="btn sm" onclick="C.resume('${d.id}')">متابعة المسودة</button></div>`;
+    }).join('')}
+    <div class="sec-h"><h2>طلباتي</h2><span class="small muted">${list.length} طلب</span></div>
+    ${list.length ? `<div class="ogrid">${list.map(o => {
+      const s = stage(o);
+      return `<button class="ocard" onclick="C.openOrder('${o.id}')">
+        <div class="row between"><b class="num">${o.id}</b>${pill(o.status)}</div>
+        <div style="font-weight:700">${esc(orderTitle(o))}</div>
+        <div class="row between small muted"><span>${s.who === 'admin' || s.who === 'lawyer' || s.who === 'ceo' ? 'لدى فريق خبير' : s.t || 'آخر تحديث ' + ago(o.updatedAt)}</span>${clientNeedsAction(o) ? '<span class="tag red">إجراء مطلوب منك</span>' : ''}</div>
+      </button>`;
+    }).join('')}</div>` : '<div class="card empty">لا توجد طلبات بعد — ابدأ بطلبك الأول</div>'}`;
+}
+function clientWizard() {
+  const o = order(CV.orderId);
+  if (!o) { CV.screen = 'home'; return clientHome(); }
+  const left = Math.max(0, Math.ceil((o.createdAt + DRAFT_TTL - now()) / HOUR));
+  let body = '';
+  if (o.step === 1) {
+    body = `<div><h2 style="margin:0 0 4px">ما الذي تحتاجه؟</h2><p class="small muted" style="margin:0">اختر الخدمة، أو «لدي مشكلة» إن لم تكن متأكداً.</p></div>
+      <div class="grid2">${SERVICES.map((s, i) => `<button class="choice ${i === 0 ? 'wide' : ''}" onclick="C.setService('${s.k}')"><span class="ic">${s.i}</span>${s.t}<small>${s.d}</small></button>`).join('')}</div>`;
+  } else if (o.step === 2) {
+    body = `<div><h2 style="margin:0 0 4px">ما تصنيف المسألة؟</h2><p class="small muted" style="margin:0">الخدمة: ${svcLabel(o.service)}</p></div>
+      <div class="grid2">${CATS.map(c => `<button class="choice" onclick="C.setCat('${c.k}')"><span class="ic">${c.i}</span>${c.t}</button>`).join('')}</div>
+      <div class="card" style="border-style:dashed;border-color:var(--hover-line);background:var(--blue-50)">
+        <h4>🤔 لا أعرف التصنيف — اكتب مشكلتك هنا</h4>
+        <textarea id="freeText" placeholder="اشرح مشكلتك بكلماتك كما حدثت...">${esc(o.freeText)}</textarea>
+        <button class="btn block" style="margin-top:8px" onclick="C.setFree()">متابعة</button></div>`;
+  } else if (o.step === 3) {
+    const q = nextQ(o);
+    const answered = o.hist.map(k => `<div class="qa"><span class="q">${esc(qText(o, k))}</span><span class="a">${esc(o.answers[k] || 'لم يُحدد')}</span>
+      <button class="btn ghost sm" onclick="C.editAns('${k}')">تعديل</button></div>`).join('');
+    let qhtml;
+    if (q) {
+      const input = q.type === 'choice'
+        ? `<div class="opts">${q.o.map((x, i) => `<button onclick="C.answer(${i})">${x}</button>`).join('')}</div>`
+        : `<input id="qin" type="${q.type}" ${q.type === 'number' ? 'min="0" inputmode="numeric"' : ''} onkeydown="if(event.key==='Enter')C.answer()">
+          <div class="row" style="margin-top:8px"><button class="btn grow" onclick="C.answer()">التالي</button>
+          ${q.optional ? `<button class="btn ghost" onclick="C.answer(null,true)">لا أعرف</button>` : ''}</div>`;
+      qhtml = `<div class="qbox"><div class="small muted">سؤال ${o.hist.length + 1}</div><div class="qt">${q.t}</div>${input}</div>`;
+    } else {
+      qhtml = `<div class="banner ok">✓ اكتملت البيانات اللازمة للدراسة الأولية.</div>
+        <div><label class="f" for="notes">هل تود إضافة تفاصيل أخرى؟ (اختياري)</label>
+        <textarea id="notes" placeholder="أي معلومات تراها مهمة...">${esc(o.notes)}</textarea></div>
+        <button class="btn block" onclick="C.toDocs()">متابعة لرفع المستندات</button>`;
+    }
+    body = `<div><h2 style="margin:0 0 4px">أسئلة مختصرة</h2><p class="small muted" style="margin:0">${catLabel(o.category)} — تظهر الأسئلة تباعاً بحسب إجاباتك.</p></div>
+      ${o.freeText ? `<div class="req"><div class="meta">ما كتبته:</div>${esc(o.freeText)}</div>` : ''}
+      ${answered ? `<div>${answered}</div>` : ''}${qhtml}`;
+  } else if (o.step === 4) {
+    body = `<div><h2 style="margin:0 0 4px">المستندات الأولية</h2><p class="small muted" style="margin:0">ارفع ما لديك من عقود أو مراسلات أو صور (اختياري).</p></div>
+      <div class="card"><input type="file" id="wizFiles" multiple onchange="C.upload(this,'${o.id}')">
+      <ul class="files" style="margin-top:8px">${o.docs.map((d, i) => `<li><span>📎 ${esc(d.name)} <span class="muted small">(${Math.ceil(d.size / 1024)} KB)</span></span>
+        <button class="btn ghost sm" onclick="C.rmDoc(${i})">حذف</button></li>`).join('') || '<li class="muted">لا توجد ملفات</li>'}</ul></div>
+      <div class="row"><button class="btn ghost" onclick="C.step(3)">رجوع</button><button class="btn grow" onclick="C.step(5)">متابعة للمراجعة</button></div>`;
+  } else {
+    const s = summary(o), nf = '<span class="muted">لم يُذكر</span>';
+    body = `<div><h2 style="margin:0 0 4px">مراجعة الطلب قبل الإرسال</h2></div>
+      <div class="banner info small">البيانات أدناه كما أدخلتها أنت فقط.</div>
+      <div class="card"><dl class="kv">
+        <dt>الخدمة</dt><dd>${svcLabel(o.service)}</dd><dt>التصنيف</dt><dd>${catLabel(o.category)}</dd>
+        <dt>الطرف الآخر</dt><dd>${esc(s.otherParty) || nf}</dd><dt>الموضوع</dt><dd>${esc(s.subject) || nf}</dd>
+        <dt>المبلغ</dt><dd class="num">${s.amount || nf}</dd><dt>التاريخ</dt><dd class="num">${esc(s.date) || nf}</dd>
+        <dt>المستندات</dt><dd>${o.docs.length} ملف</dd></dl></div>
+      ${o.notes ? `<div class="card small"><b>تفاصيل إضافية:</b> ${esc(o.notes)}</div>` : ''}
+      <div class="row"><button class="btn ghost" onclick="C.step(3)">تعديل الإجابات</button><button class="btn green grow lg" onclick="C.submit()">إرسال الطلب</button></div>`;
+  }
+  return `<div class="narrow stack">
+    <div class="banner warn draft-bar">⚠️ هذا الطلب <b>مسودة</b> وسيُحذف تلقائياً بعد <b class="num">${left} ساعة</b> إن لم يُرسل.</div>
+    <div class="row between"><button class="btn ghost sm" onclick="C.go('home')">→ رجوع لطلباتي</button><span class="small muted num">${o.id} • الخطوة ${o.step} من 5</span></div>
+    <div class="steps">${[1, 2, 3, 4, 5].map(i => `<div class="${i <= o.step ? 'on' : ''}"></div>`).join('')}</div>
+    ${body}
+    <div style="text-align:center"><button class="btn danger-ghost sm" onclick="C.delDraft()">حذف المسودة</button></div></div>`;
+}
+function clientOrder() {
+  const o = order(CV.orderId);
+  if (!o) { CV.screen = 'home'; return clientHome(); }
+  const s = stage(o), sm = summary(o);
+  const tl = [['المراجعة', true], ['العقد', !!(o.contract && o.contract.acceptedAt) || !!o.freeAnswer], ['الدفع', !!o.payment || !!o.freeAnswer],
+    ['التنفيذ', ['READY_DELIVERY', 'CLOSED'].includes(o.status)], ['التسليم', o.status === 'CLOSED']];
+  const curIdx = tl.findIndex(x => !x[1]);
+  const timeline = o.status === 'CANCELLED' ? '' : `<div class="card" style="padding:14px 8px"><div class="timeline">${tl.map((x, i) =>
+    `<div class="${x[1] ? 'done' : i === curIdx ? 'cur' : ''}"><b>${x[1] ? '✓' : i + 1}</b>${x[0]}</div>`).join('')}</div></div>`;
+  let action = '';
+  if (o.freeAnswer) {
+    action = `<div class="card" style="border-color:var(--ok-line);background:var(--green-50)"><h3>💡 الإجابة النهائية من خبير (مجانية)</h3><p style="margin:0">${esc(o.freeAnswer.text)}</p>
+      <div class="small muted" style="margin-top:6px">${fdt(o.freeAnswer.at)}</div></div>`;
+  } else if (o.contract && !o.contract.acceptedAt && o.status === 'UNDER_REVIEW') {
+    action = contractCard(o, true);
+  } else if (o.contract && o.contract.acceptedAt && !o.payment && o.status === 'UNDER_REVIEW') {
+    const total = o.contract.fee * (1 + VAT);
+    action = `<div class="card"><h3>💳 سداد الأتعاب</h3>
+      <div class="row between"><span class="muted">الإجمالي شامل الضريبة</span><b class="num" style="font-size:19px">${money(total)}</b></div>
+      <div class="pay-opts">${['مدى', 'Visa', 'Mastercard'].map((m, i) => `<label><input type="radio" name="pm" value="${m}" ${i === 0 ? 'checked' : ''}>${m}</label>`).join('')}</div>
+      <div class="small muted" style="margin-bottom:10px">🔒 بوابة دفع تجريبية — لا تُطلب بيانات بطاقة في هذا النموذج.</div>
+      <button class="btn green block" onclick="C.pay()">ادفع ${money(total)}</button></div>`;
+  } else if (o.payment && !o.ceoApproved && o.status === 'UNDER_REVIEW') {
+    action = `<div class="banner info">✅ تم السداد. بانتظار اعتماد بدء التنفيذ من إدارة خبير — سيصلك إشعار فور بدء العمل.</div>`;
+  } else if (o.status === 'READY_DELIVERY') {
+    const third = o.revisions.length === 2;
+    action = resultCard(o) + `<div class="card"><h3>هل النتيجة مناسبة؟</h3>
+      <div class="stack"><button class="btn green block" onclick="C.acceptResult()">✔ استلام نهائي وإغلاق الطلب</button>
+      <button class="btn ghost block" onclick="C.toggleRevise()">طلب تعديل</button></div>
+      ${CV.reviseOpen ? `<div class="stack" style="margin-top:12px">
+        <div class="banner info small">التعديل خدمة تابعة للعمل الأصلي ومجانية ما دامت ضمن النطاق المتفق عليه.</div>
+        ${third ? `<div class="banner warn small">🔔 تنبيه: هذه <b>المرة الثالثة</b> لطلب المراجعة على هذا الطلب.</div>` : ''}
+        <textarea id="reviseText" placeholder="ما التعديل المطلوب تحديداً؟"></textarea>
+        <button class="btn block" onclick="C.revise()">إرسال طلب التعديل</button></div>` : ''}</div>`;
+  } else if (o.status === 'CLOSED' && o.result) action = resultCard(o);
+  else if (o.status === 'IN_PROGRESS') action = `<div class="banner info">⚙️ العمل جارٍ على طلبك${o.revisions.length ? ` (تعديل رقم ${o.revisions.length})` : ''}. المدة المتفق عليها: ${o.contract ? o.contract.days + ' يوم' : '—'}.</div>`;
+  else if (o.status === 'UNDER_REVIEW') action = `<div class="banner info">«تم استلام طلبك، وجارٍ مراجعته من فريق خبير، وسيتم التواصل معك قريبًا.»</div>`;
+  else if (o.status === 'CANCELLED') action = `<div class="banner err">تم إلغاء هذا الطلب.</div>`;
+  if (o.contract && o.contract.acceptedAt) action += `<details class="card"><summary><b>📃 العقد المعتمد</b></summary><div style="margin-top:10px">${contractCard(o, false)}</div></details>`;
+  if (o.payment) action += `<button class="btn ghost block" onclick="showInvoice('${o.id}')">🧾 عرض الفاتورة الإلكترونية ${o.payment.invoice}</button>`;
+
+  const active = !['CLOSED', 'CANCELLED'].includes(o.status);
+  const types = [['inquiry', 'استفسار عن الطلب']];
+  if (o.status === 'IN_PROGRESS' && !o.uploadUnlocked) types.push(['upload', 'طلب إضافة مستند']);
+  if (o.contract) types.push(['change', 'طلب تعديل أو إلغاء']);
+  const reqs = `<div class="card"><h3>📌 التنبيهات والطلبات</h3>
+    <p class="small muted" style="margin-top:-4px">التواصل مع خبير يتم عبر طلبات منظمة مرتبطة بهذا الطلب.</p>
+    <div class="stack">${o.requests.map(r => reqView(r, 'client')).join('') || '<div class="small muted">لا توجد تنبيهات</div>'}</div>
+    ${active ? `<details style="margin-top:10px"><summary class="small" style="color:var(--blue);font-weight:700;cursor:pointer">+ تقديم تنبيه مرتبط</summary>
+      <div class="stack" style="margin-top:8px"><select id="rqType">${types.map(t => `<option value="${t[0]}">${t[1]}</option>`).join('')}</select>
+      <textarea id="rqText" placeholder="اكتب طلبك..."></textarea><button class="btn block" onclick="C.request()">إرسال</button></div></details>` : ''}
+    ${o.status === 'UNDER_REVIEW' && !o.contract && !o.freeAnswer ? `<button class="btn danger-ghost block sm" style="margin-top:12px" onclick="C.cancel()">إلغاء الطلب</button>` : ''}
+    ${o.contract && active ? `<div class="small muted" style="margin-top:10px">بعد صدور العقد لا يمكن الإلغاء أو التعديل المباشر؛ قدّم «طلب تعديل أو إلغاء» وستدرسه إدارة خبير.</div>` : ''}</div>`;
+  const docs = `<div class="card"><h3>📎 المستندات</h3>
+    <ul class="files">${o.docs.map(d => `<li><span>${d.by === 'client' ? '📄' : '🏢'} ${esc(d.name)}</span><span class="small muted">${fdt(d.at)}</span></li>`).join('') || '<li class="muted">لا توجد مستندات</li>'}</ul>
+    ${active && canClientUpload(o) ? `<div style="margin-top:10px">${o.uploadUnlocked ? '<div class="banner ok small" style="margin-bottom:8px">فُتحت لك صلاحية رفع مستند.</div>' : ''}<input type="file" id="ordFiles" multiple onchange="C.upload(this,'${o.id}')"></div>`
+      : active ? `<div class="small muted" style="margin-top:10px">🔒 الرفع المباشر مغلق بعد بدء التنفيذ. لإضافة مستند قدّم تنبيهاً مرتبطاً من نوع «طلب إضافة مستند».</div>` : ''}</div>`;
+  const data = `<details class="card"><summary><b>بيانات الطلب كما أرسلتها</b></summary>
+    <dl class="kv" style="margin-top:10px"><dt>الخدمة</dt><dd>${svcLabel(o.service)}</dd><dt>التصنيف</dt><dd>${catLabel(o.category)}</dd>
+    <dt>الطرف الآخر</dt><dd>${esc(sm.otherParty) || '—'}</dd><dt>الموضوع</dt><dd>${esc(sm.subject) || '—'}</dd>
+    <dt>المبلغ</dt><dd class="num">${sm.amount || '—'}</dd><dt>التاريخ</dt><dd class="num">${esc(sm.date) || '—'}</dd></dl>
+    ${o.freeText ? `<p class="small">${esc(o.freeText)}</p>` : ''}${o.notes ? `<p class="small">${esc(o.notes)}</p>` : ''}</details>`;
+  const clientStage = ['admin', 'lawyer', 'ceo'].includes(s.who) && o.status === 'UNDER_REVIEW' && !o.payment ? 'لدى فريق خبير للدراسة' : s.t;
+  return `<div class="stack">
+    <div class="row between"><button class="btn ghost sm" onclick="C.go('home')">→ طلباتي</button><span class="small muted">أُرسل ${fdt(o.submittedAt)}</span></div>
+    <div class="row between"><h2 style="margin:0;font-size:20px"><span class="num">${o.id}</span> — ${esc(orderTitle(o))}</h2>${pill(o.status)}</div>
+    ${clientStage ? `<div class="small muted" style="margin-top:-6px">${clientStage}</div>` : ''}
+    <div class="cols"><div class="stack">${timeline}${action}${data}</div><div class="stack">${reqs}${docs}</div></div></div>`;
+}
+function contractCard(o, actionable) {
+  const c = o.contract, vat = c.fee * VAT;
+  return `<div class="contract">
+    <div class="hd"><b>📃 العقد الإلكتروني الموحد</b><span class="small muted num">${o.id}</span></div>
+    <dl class="kv"><dt>الطرفان</dt><dd>${esc(S.client.name)} ↔ خبير</dd>
+    <dt>نطاق العمل</dt><dd style="font-weight:500">${esc(c.scope)}</dd>
+    <dt>المدة</dt><dd>${c.days} يوم من اعتماد بدء التنفيذ</dd>
+    <dt>الأتعاب</dt><dd class="num">${money(c.fee)} + ضريبة ${money(vat)}</dd></dl>
+    <div class="row between" style="margin-top:10px"><span class="muted small">الإجمالي</span><span class="total num">${money(c.fee + vat)}</span></div>
+    <ul class="small muted" style="padding-right:18px;margin:10px 0">
+      <li>التعديلات ضمن النطاق المتفق عليه مجانية.</li>
+      <li>بعد الاعتماد لا يتاح التعديل أو الإلغاء المباشر، ويُقدَّم طلب مستقل تدرسه إدارة خبير.</li>
+      <li>يبدأ العمل بعد السداد واعتماد الإدارة.</li></ul>
+    ${actionable ? `<div class="banner info small" style="margin-bottom:10px">اعتمادك للعقد = موافقة نهائية واحدة على <b>السعر + النطاق + المدة</b>.</div>
+      <button class="btn dark block" onclick="C.acceptContract()">اعتماد العقد</button>`
+      : c.acceptedAt ? `<div class="small" style="color:var(--green)">✔ اعتُمد في ${fdt(c.acceptedAt)}</div>` : '<span class="tag amber">بانتظار اعتماد العميل</span>'}</div>`;
+}
+function resultCard(o) {
+  return `<div class="card" style="border-color:var(--ok-line)"><h3>📦 مخرجات العمل</h3>
+    ${o.result.note ? `<p style="margin-top:0">${esc(o.result.note)}</p>` : ''}
+    <ul class="files">${o.result.files.map(f => `<li><span>📥 ${esc(f)}</span><button class="btn ghost sm" onclick="toast('تحميل تجريبي: ${esc(f)}')">تحميل</button></li>`).join('')}</ul>
+    ${o.revisions.length ? `<div class="small muted" style="margin-top:6px">عدد طلبات التعديل: ${o.revisions.length}</div>` : ''}</div>`;
+}
+const REQ_T = { inquiry: 'استفسار', upload: 'طلب إضافة مستند', change: 'طلب تعديل/إلغاء', complete: 'طلب استكمال بيانات', revision: 'طلب تعديل على النتيجة' };
+function reqView(r, side, ctl = '') {
+  const fromLbl = r.from === 'client' ? (side === 'client' ? 'أنت' : 'العميل') : 'فريق خبير';
+  let tail = r.reply ? `<div class="reply"><b>${r.from === 'client' ? 'رد خبير' : (side === 'client' ? 'ردك' : 'رد العميل')}:</b> ${esc(r.reply)}</div>` : '';
+  if (side === 'client' && r.from === 'team' && r.status === 'open' && r.type === 'complete')
+    tail += `<textarea id="rep_${r.id}" style="margin-top:6px" placeholder="ردك..."></textarea><button class="btn sm" style="margin-top:4px" onclick="C.replyTeam('${r.id}')">إرسال الرد</button>`;
+  return `<div class="req ${r.from === 'team' ? 'team' : ''}">
+    <div class="row between"><b>${REQ_T[r.type] || r.type}</b><span class="tag ${r.status === 'open' ? 'amber' : 'green'}">${r.status === 'open' ? 'مفتوح' : 'مغلق'}</span></div>
+    <div>${esc(r.text)}</div><div class="meta">${fromLbl} • ${fdt(r.at)}</div>${tail}${ctl}</div>`;
+}
+function clientFile() {
+  const os = S.orders.filter(o => o.status !== 'DRAFT');
+  const docs = os.flatMap(o => o.docs.map(d => ({ ...d, oid: o.id })));
+  return `<div class="stack"><div class="sec-h" style="margin-top:0"><h2>ملفي الحقوقي</h2><span class="tag blue num">${S.client.fileNo}</span></div>
+    <div class="kpis"><div class="kpi"><b>${os.length}</b><span>إجمالي الطلبات</span></div>
+      <div class="kpi"><b>${os.filter(o => !['CLOSED', 'CANCELLED'].includes(o.status)).length}</b><span>طلبات نشطة</span></div>
+      <div class="kpi"><b>${os.filter(o => o.status === 'CLOSED').length}</b><span>طلبات منجزة</span></div>
+      <div class="kpi"><b>${docs.length}</b><span>مستندات</span></div></div>
+    <div class="cols"><div class="card"><h3>سجل الطلبات</h3>${os.map(o => `<div class="qa" style="cursor:pointer" onclick="C.openOrder('${o.id}')"><span class="q"><b class="num">${o.id}</b> — ${esc(orderTitle(o))}</span>${pill(o.status)}</div>`).join('') || '<div class="muted small">—</div>'}</div>
+    <div class="card"><h3>المستندات العامة</h3><ul class="files">${docs.map(d => `<li><span>📄 ${esc(d.name)}</span><span class="small muted num">${d.oid}</span></li>`).join('') || '<li class="muted">لا توجد مستندات</li>'}</ul></div></div></div>`;
+}
+function clientComplaints() {
+  return `<div class="narrow stack"><h2 style="margin:0">الشكاوى والاقتراحات</h2>
+    <div class="card stack"><p class="small muted" style="margin:0">قسم مستقل عن الطلبات، تتابعه إدارة خبير مباشرة.</p>
+      <div class="grid2 r"><select id="cpType"><option value="complaint">شكوى</option><option value="suggestion">اقتراح</option></select>
+      <select id="cpOrder"><option value="">غير مرتبط بطلب</option>${S.orders.filter(o => o.status !== 'DRAFT').map(o => `<option>${o.id}</option>`).join('')}</select></div>
+      <textarea id="cpText" placeholder="اكتب ملاحظتك..."></textarea><button class="btn block" onclick="C.complain()">إرسال</button></div>
+    ${S.complaints.slice().reverse().map(c => `<div class="req"><div class="row between"><b>${c.type === 'complaint' ? 'شكوى' : 'اقتراح'} ${c.orderId ? '• ' + c.orderId : ''}</b>
+      <span class="tag ${c.status === 'open' ? 'amber' : 'green'}">${c.status === 'open' ? 'قيد الدراسة' : 'تمت المعالجة'}</span></div>
+      <div>${esc(c.text)}</div><div class="meta">${fdt(c.at)}</div>${c.reply ? `<div class="reply"><b>رد خبير:</b> ${esc(c.reply)}</div>` : ''}</div>`).join('')}</div>`;
+}
+function clientNotifs() {
+  return `<div class="narrow stack"><h2 style="margin:0">الإشعارات</h2>
+    <div class="small muted">قناة التنبيهات المعتمدة: إشعارات التطبيق (Push) حصراً.</div>
+    ${S.notifs.slice().reverse().map(n => `<button class="ocard" onclick="C.openNotif('${n.id}')" style="${n.read ? '' : 'border-color:var(--hover-line);background:var(--blue-50)'}">
+      <div>${n.read ? '' : '🔵 '}${esc(n.text)}</div><div class="small muted">${ago(n.at)}</div></button>`).join('') || '<div class="card empty">لا توجد إشعارات</div>'}</div>`;
+}
+
+const C = {
+  go(s) { CV.screen = s; CV.reviseOpen = false; render(); scrollTo(0, 0); },
+  openOrder(id) { const o = order(id); if (!o) return; if (o.status === 'DRAFT') return C.resume(id); CV.screen = 'order'; CV.orderId = id; CV.reviseOpen = false; render(); scrollTo(0, 0); },
+  openNotif(id) { const n = S.notifs.find(x => x.id === id); if (n) n.read = true; pushQueue = null; n && n.orderId && order(n.orderId) ? C.openOrder(n.orderId) : render(); },
+  newOrder() {
+    const t = now();
+    const o = { id: 'KH-' + (++S.seq), clientId: 'c1', status: 'DRAFT', service: null, category: null, freeText: '', notes: '', answers: {}, hist: [], step: 1, docs: [], requests: [], internal: [], revisions: [],
+      contract: null, payment: null, ceoApproved: false, result: null, freeAnswer: null, payout: null, assignee: null, assignAccepted: false, triaged: false, uploadUnlocked: false,
+      createdAt: t, submittedAt: null, lastActionAt: t, updatedAt: t };
+    S.orders.push(o); CV.orderId = o.id; CV.screen = 'wizard'; render(); scrollTo(0, 0);
+  },
+  resume(id) { CV.orderId = id; CV.screen = 'wizard'; render(); scrollTo(0, 0); },
+  cur() { return order(CV.orderId); },
+  step(n) { const o = C.cur(); o.step = n; o.updatedAt = now(); render(); },
+  setService(k) { const o = C.cur(); o.service = k; o.step = 2; render(); },
+  setCat(k) { const o = C.cur(); if (o.category !== k) { o.answers = {}; o.hist = []; } o.category = k; o.freeText = ''; o.step = 3; render(); },
+  setFree() {
+    const v = document.getElementById('freeText').value.trim();
+    if (v.length < 10) return toast('اكتب وصفاً للمشكلة من 10 أحرف على الأقل');
+    const o = C.cur(); if (o.category !== 'free') { o.answers = {}; o.hist = []; } o.category = 'free'; o.freeText = v; o.step = 3; render();
+  },
+  answer(i, skip) {
+    const o = C.cur(), q = nextQ(o); if (!q) return;
+    let v;
+    if (skip) v = '';
+    else if (q.type === 'choice') v = q.o[i];
+    else { v = (document.getElementById('qin').value || '').trim(); if (!v) return toast('أجب عن السؤال أو اختر «لا أعرف»'); }
+    o.answers[q.k] = v; o.hist.push(q.k); o.updatedAt = now(); render();
+    setTimeout(() => { const el = document.getElementById('qin'); el && el.focus(); }, 0);
+  },
+  editAns(k) { const o = C.cur(); const i = o.hist.indexOf(k); o.hist.slice(i).forEach(x => delete o.answers[x]); o.hist = o.hist.slice(0, i); render(); },
+  toDocs() { const o = C.cur(); o.notes = document.getElementById('notes').value.trim(); o.step = 4; render(); },
+  upload(inp, id) {
+    const o = order(id), n = inp.files.length;
+    [...inp.files].forEach(f => o.docs.push({ name: f.name, size: f.size, at: now(), by: 'client' }));
+    if (o.status !== 'DRAFT') {
+      audit('رفع مستند', o.id, [...inp.files].map(f => f.name).join('، '), 'العميل');
+      o.uploadUnlocked = false; touch(o); notifyTeam(o, `رفع العميل مستنداً جديداً في الطلب ${o.id}`);
+    }
+    render(); toast(`تم رفع ${n} ملف`);
+  },
+  rmDoc(i) { C.cur().docs.splice(i, 1); render(); },
+  submit() {
+    const o = C.cur(); o.status = 'UNDER_REVIEW'; o.submittedAt = now(); touch(o);
+    audit('إنشاء طلب', o.id, `إرسال الطلب — ${catLabel(o.category)}`, 'العميل');
+    push('تم استلام طلبك، وجارٍ مراجعته من فريق خبير، وسيتم التواصل معك قريبًا.', o.id);
+    notifyRole('reception', `طلب جديد ${o.id} بانتظار الفرز والإسناد`, o.id);
+    CV.screen = 'submitted'; render(); scrollTo(0, 0);
+  },
+  delDraft(ok) {
+    if (!ok) return ask('حذف المسودة نهائياً؟', () => C.delDraft(true));
+    S.orders = S.orders.filter(o => o.id !== CV.orderId); CV.screen = 'home'; render();
+  },
+  acceptContract() {
+    const o = C.cur(); o.contract.acceptedAt = now(); o.updatedAt = now();
+    audit('اعتماد عقد', o.id, `موافقة على السعر والنطاق والمدة — ${money(o.contract.fee)} / ${o.contract.days} يوم`, 'العميل');
+    notifyStaff(o.assignee, `اعتمد العميل عقد الطلب ${o.id}`, o.id);
+    render(); toast('تم اعتماد العقد — يمكنك الآن السداد');
+  },
+  pay() {
+    const o = C.cur(), m = (document.querySelector('input[name=pm]:checked') || {}).value || 'مدى';
+    const inv = 'INV-' + new Date(now()).getFullYear() + '-' + String(++S.invoices).padStart(4, '0');
+    o.payment = { method: m, amount: o.contract.fee * (1 + VAT), at: now(), invoice: inv }; touch(o);
+    audit('دفع', o.id, `${m} — ${money(o.payment.amount)} — ${inv}`, 'العميل');
+    push(`تم سداد أتعاب الطلب ${o.id} وإصدار الفاتورة ${inv}`, o.id);
+    notifyRole('ceo', `الطلب ${o.id} مسدد وبانتظار اعتمادك لبدء التنفيذ`, o.id);
+    notifyStaff(o.assignee, `سدد العميل أتعاب الطلب ${o.id} — بانتظار اعتماد المدير`, o.id);
+    render(); showInvoice(o.id);
+  },
+  acceptResult() {
+    const o = C.cur(); o.status = 'CLOSED'; touch(o);
+    audit('إغلاق الطلب', o.id, 'استلام نهائي من العميل', 'العميل');
+    notifyStaff(o.assignee, `أغلق العميل الطلب ${o.id} — أتعابك أصبحت مستحقة`, o.id);
+    render(); toast('تم إغلاق الطلب. شكراً لثقتك بخبير');
+  },
+  toggleRevise() { CV.reviseOpen = !CV.reviseOpen; render(); },
+  revise() {
+    const o = C.cur(), v = document.getElementById('reviseText').value.trim();
+    if (!v) return toast('وضّح التعديل المطلوب');
+    o.revisions.push({ text: v, at: now() });
+    o.requests.push({ id: nid('r'), from: 'client', type: 'revision', text: v, at: now(), status: 'open' });
+    o.status = 'IN_PROGRESS'; touch(o); CV.reviseOpen = false;
+    audit('طلب تعديل', o.id, `المراجعة رقم ${o.revisions.length}: ${v}`, 'العميل');
+    notifyStaff(o.assignee, `طلب العميل تعديلاً على الطلب ${o.id} (رقم ${o.revisions.length})`, o.id);
+    if (o.revisions.length === 3) push(`تنبيه: هذه المرة الثالثة لطلب المراجعة على الطلب ${o.id}`, o.id);
+    render(); toast('تم إرسال طلب التعديل');
+  },
+  request() {
+    const o = C.cur(), type = document.getElementById('rqType').value, text = document.getElementById('rqText').value.trim();
+    if (!text) return toast('اكتب الطلب أولاً');
+    o.requests.push({ id: nid('r'), from: 'client', type, text, at: now(), status: 'open' }); touch(o);
+    audit('تنبيه من العميل', o.id, `${REQ_T[type]}: ${text}`, 'العميل');
+    notifyTeam(o, `${REQ_T[type]} من العميل في الطلب ${o.id}`);
+    if (type === 'change') notifyRole('ceo', `طلب تعديل/إلغاء على الطلب ${o.id} بانتظار قرارك`, o.id);
+    render(); toast('تم إرسال التنبيه');
+  },
+  replyTeam(rid) {
+    const o = C.cur(), r = o.requests.find(x => x.id === rid), v = document.getElementById('rep_' + rid).value.trim();
+    if (!v) return; r.reply = v; r.status = 'done'; touch(o);
+    audit('تعديل بيانات', o.id, `استكمال من العميل: ${v}`, 'العميل'); notifyTeam(o, `استكمل العميل البيانات في الطلب ${o.id}`); render();
+  },
+  cancel(ok) {
+    if (!ok) return ask('إلغاء الطلب؟ لا يمكن التراجع عن الإلغاء.', () => C.cancel(true));
+    const o = C.cur(); o.status = 'CANCELLED'; touch(o); audit('إلغاء طلب', o.id, 'إلغاء من العميل قبل صدور العقد', 'العميل');
+    notifyTeam(o, `ألغى العميل الطلب ${o.id}`); render();
+  },
+  complain() {
+    const text = document.getElementById('cpText').value.trim(); if (!text) return toast('اكتب الشكوى أو الاقتراح');
+    const c = { id: nid('cp'), type: document.getElementById('cpType').value, orderId: document.getElementById('cpOrder').value, text, at: now(), status: 'open' };
+    const lbl = c.type === 'complaint' ? 'شكوى' : 'اقتراح';
+    S.complaints.push(c); notifyRole('reception', `${lbl} جديد من العميل`, c.orderId); notifyRole('ceo', `${lbl} جديد من العميل`, c.orderId);
+    render(); toast('تم الإرسال');
+  },
+};
+
+/* ================= البوابات الداخلية: المحامي والإدارة ================= */
+const LV = { view: 'home', orderId: null, filter: 'active' };
+const AV = { view: 'orders', orderId: null, filter: 'active' };
+const V = () => PORTAL === 'lawyer' ? LV : AV;
+function consoleShell(nav, main) {
+  const u = me(), lw = PORTAL === 'lawyer';
+  const pool = S.users.filter(x => (lw ? LAWYER_ROLES : ADMIN_ROLES).includes(x.role));
+  const v = V();
+  return `<div class="con"><aside class="con-side ${lw ? 'lawyer' : ''}">
+    <div class="con-brand"><span class="mark">خ</span><div><b>خبير</b><small>${lw ? 'بوابة المحامين' : 'لوحة الإدارة'}</small></div></div>
+    <div class="who"><label for="whoSel">الدخول باسم (محاكاة)</label>
+      <select id="whoSel" onchange="K.login(this.value)">${pool.map(x => `<option value="${x.id}" ${x.id === u.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
+      <div class="role">${ROLES[u.role]}</div></div>
+    <div class="con-nav">${nav.map(([k, t, b, ok = true]) => `<button class="${v.view === k || (k === 'orders' && v.view === 'order') ? 'on' : ''} ${ok ? '' : 'lock'}" onclick="K.go('${k}')"><span>${t}${ok ? '' : ' 🔒'}</span>${b ? `<i>${b}</i>` : ''}</button>`).join('')}</div>
+    <div class="con-foot">${lw ? 'هويتك لا تظهر للعميل؛ العميل يتعامل مع «خبير» مباشرة.' : 'لوحة واحدة تتكيف واجهاتها بحسب الدور.'}</div>
+  </aside><section class="con-main">${main}</section>
+  ${consoleTabs(nav, lw)}</div>`;
+}
+/* شريط التبويبات السفلي للبوابات الداخلية: 4 تبويبات + «المزيد» إن زادت */
+const splitNav = t => { const m = t.match(/^(\S+)\s+(.*)$/); return m ? [m[1], m[2]] : ['•', t]; };
+const navOn = k => { const v = V(); return v.view === k || (k === 'orders' && v.view === 'order'); };
+function tabBtn([k, t, b, ok = true]) {
+  const [ic, label] = splitNav(t);
+  return `<button class="${navOn(k) ? 'on' : ''} ${ok ? '' : 'lock'}" onclick="K.go('${k}')"><b>${ic}</b><span>${label.split(' ')[0]}${ok ? '' : ' 🔒'}</span>${b ? `<i>${b}</i>` : ''}</button>`;
+}
+function consoleTabs(nav, lw) {
+  window._moreNav = nav;
+  if (nav.length <= 5) return `<nav class="bnav ${lw ? 'lawyer' : ''}">${nav.map(tabBtn).join('')}</nav>`;
+  const main = nav.slice(0, 4), rest = nav.slice(4);
+  const restOn = rest.some(([k]) => navOn(k)), restBadge = rest.reduce((s, x) => s + (+x[2] || 0), 0);
+  return `<nav class="bnav">${main.map(tabBtn).join('')}<button class="${restOn ? 'on' : ''}" onclick="moreTabs()"><b>☰</b><span>المزيد</span>${restBadge ? `<i>${restBadge}</i>` : ''}</button></nav>`;
+}
+function moreTabs() {
+  const rest = (window._moreNav || []).slice(4);
+  modal(`<h3 style="margin:0">المزيد</h3><div class="more-list">${rest.map(([k, t, b, ok = true]) => { const [ic, label] = splitNav(t); return `<button class="${navOn(k) ? 'on' : ''}" onclick="closeModal();K.go('${k}')"><b>${ic}</b>${label}${ok ? '' : ' 🔒'}${b ? ` (${b})` : ''}</button>`; }).join('')}</div><button class="btn ghost" style="margin-top:14px;width:100%" onclick="closeModal()">إغلاق</button>`);
+}
+const denied = () => `<div class="denied"><div style="font-size:40px">🔒</div><h3>غير متاح لدورك الحالي</h3><p>هذه الصفحة حصرية للمدير التنفيذي وفق مصفوفة الصلاحيات.</p></div>`;
+const unreadStaff = () => S.snotifs.filter(n => n.uid === me().id && !n.read).length;
+
+function ordersTable(rows, showLawyer = true) {
+  return `<div class="t-wrap"><table class="t"><thead><tr><th>الطلب</th><th>التصنيف / الموضوع</th><th>الحالة</th><th>المرحلة</th>${showLawyer ? '<th>المحامي</th>' : ''}<th>آخر إجراء</th></tr></thead><tbody>
+    ${rows.map(o => `<tr class="click ${isLate(o) ? 'late' : ''}" onclick="K.open('${o.id}')">
+      <td><b class="num">${o.id}</b><div class="small muted">${esc(S.client.name)}</div></td><td>${esc(orderTitle(o))}</td><td>${pill(o.status)}</td>
+      <td class="small">${stage(o).t || '—'} ${openClientReqs(o).length ? `<span class="tag amber">${openClientReqs(o).length} تنبيه</span>` : ''}</td>
+      ${showLawyer ? `<td class="small">${o.assignee ? esc(uname(o.assignee)) + (o.assignAccepted ? '' : ' <span class="tag amber">لم يقبل</span>') : '<span class="tag red">غير مسند</span>'}</td>` : ''}
+      <td class="small">${ago(o.lastActionAt)} ${isLate(o) ? '<span class="tag red">متأخر</span>' : ''}</td></tr>`).join('') || `<tr><td colspan="6" class="empty">لا توجد طلبات</td></tr>`}
+  </tbody></table></div>`;
+}
+function staffNotifs() {
+  const list = S.snotifs.filter(n => n.uid === me().id).slice().reverse();
+  return `<h2>الإشعارات</h2>${list.map(n => `<button class="ocard" onclick="K.openNotif('${n.id}')" style="${n.read ? '' : 'border-color:var(--hover-line);background:var(--blue-50)'}">
+    <div>${n.read ? '' : '🔵 '}${esc(n.text)}</div><div class="small muted">${ago(n.at)}</div></button>`).join('') || '<div class="denied">لا توجد إشعارات</div>'}`;
+}
+
+function renderLawyer() {
+  const u = me(), mine = S.orders.filter(o => o.assignee === u.id && o.status !== 'DRAFT');
+  const invites = mine.filter(o => !o.assignAccepted && o.status === 'UNDER_REVIEW');
+  const todo = mine.filter(lawyerNeedsAction);
+  const nav = [['home', '🏠 لوحتي', invites.length || ''], ['orders', '📂 طلباتي', todo.length || ''], ['earnings', '💼 أتعابي'], ['profile', '👤 ملفي المهني'], ['notifs', '🔔 الإشعارات', unreadStaff() || '']];
+  let main;
+  const o = order(LV.orderId);
+  if (LV.view === 'order' && o && o.assignee === u.id) main = staffOrder(o);
+  else if (LV.view === 'orders' || LV.view === 'order') main = lawyerOrders(mine);
+  else if (LV.view === 'earnings') main = lawyerEarnings(mine);
+  else if (LV.view === 'profile') main = lawyerProfile(u);
+  else if (LV.view === 'notifs') main = staffNotifs();
+  else main = lawyerHome(u, mine, invites, todo);
+  return consoleShell(nav, main);
+}
+function lawyerHome(u, mine, invites, todo) {
+  const ernd = mine.map(earning).filter(Boolean);
+  const due = ernd.filter(e => e.status === 'مستحقة').reduce((a, e) => a + e.net, 0);
+  const pending = ernd.filter(e => e.status === 'معلّقة').reduce((a, e) => a + e.net, 0);
+  const late = mine.filter(isLate);
+  return `<div><h2>أهلاً ${esc(u.name)}</h2><div class="small muted">${ROLES[u.role]} • ${(u.specialties || []).map(catLabel).join('، ') || '—'} ${u.active === false ? '• <span class="tag red">غير متاح لإسنادات جديدة</span>' : ''}</div></div>
+    <div class="kpis"><div class="kpi ${invites.length ? 'alert' : ''}"><b>${invites.length}</b><span>إسنادات بانتظار ردك</span></div>
+      <div class="kpi"><b>${todo.length}</b><span>طلبات تحتاج إجراءك</span></div>
+      <div class="kpi"><b>${mine.filter(o => o.status === 'IN_PROGRESS').length}</b><span>قيد التنفيذ</span></div>
+      <div class="kpi"><b class="num" style="font-size:19px">${money(due)}</b><span>أتعاب مستحقة • معلّقة ${money(pending)}</span></div></div>
+    ${late.length ? `<div class="banner err">⏰ طلبات متأخرة لديك: ${late.map(o => `<a href="#lawyer" onclick="K.open('${o.id}');return false">${o.id}</a>`).join('، ')} — تجاوزت ${S.settings.delayHours} ساعة دون إجراء.</div>` : ''}
+    <h3 style="margin:6px 0 0">إسنادات جديدة</h3>
+    ${invites.length ? `<div class="lgrid">${invites.map(o => `<div class="lcard"><div class="row between"><b class="num">${o.id}</b><span class="tag violet">${catLabel(o.category)}</span></div>
+        <div style="font-weight:700">${esc(summary(o).subject || '—')}</div><div class="small muted">${esc((o.notes || o.freeText || '').slice(0, 110))}</div>
+        <div class="small muted">أُسند ${ago(o.lastActionAt)}</div>
+        <button class="btn green sm" onclick="K.open('${o.id}')">عرض الطلب والرد</button></div>`).join('')}</div>`
+      : '<div class="card small muted">لا توجد إسنادات جديدة الآن.</div>'}
+    <h3 style="margin:6px 0 0">تحتاج إجراءك</h3>${ordersTable(todo, false)}`;
+}
+function lawyerOrders(mine) {
+  const f = LV.filter;
+  const filters = [['active', 'النشطة', o => !['CLOSED', 'CANCELLED'].includes(o.status)], ['todo', 'تحتاج إجرائي', lawyerNeedsAction], ['done', 'المنجزة', o => o.status === 'CLOSED'], ['all', 'الكل', () => true]];
+  const fn = (filters.find(x => x[0] === f) || filters[0])[2];
+  return `<h2>طلباتي</h2><div class="chips">${filters.map(([k, t]) => `<button class="${f === k ? 'on' : ''}" onclick="K.filter('${k}')">${t}</button>`).join('')}</div>
+    ${ordersTable(mine.filter(fn).sort((a, b) => b.updatedAt - a.updatedAt), false)}`;
+}
+function lawyerEarnings(mine) {
+  const rows = mine.map(o => ({ o, e: earning(o) })).filter(x => x.e);
+  const sum = st => rows.filter(x => x.e.status === st).reduce((a, x) => a + x.e.net, 0);
+  return `<h2>أتعابي</h2><div class="banner info small">تحتسب المنصة عمولة ${S.settings.commission}% من الأتعاب قبل الضريبة. تصبح الأتعاب مستحقة بعد إغلاق الطلب واستلام العميل النهائي.</div>
+    <div class="kpis"><div class="kpi"><b class="num" style="font-size:19px">${money(sum('معلّقة'))}</b><span>معلّقة (طلبات جارية)</span></div>
+      <div class="kpi"><b class="num" style="font-size:19px">${money(sum('مستحقة'))}</b><span>مستحقة للتحويل</span></div>
+      <div class="kpi"><b class="num" style="font-size:19px">${money(sum('محوّلة'))}</b><span>تم تحويلها</span></div>
+      <div class="kpi"><b>${rows.length}</b><span>طلبات مدفوعة</span></div></div>
+    <div class="t-wrap"><table class="t"><thead><tr><th>الطلب</th><th>الأتعاب</th><th>عمولة المنصة</th><th>صافي أتعابك</th><th>الحالة</th></tr></thead><tbody>
+    ${rows.map(({ o, e }) => `<tr class="click" onclick="K.open('${o.id}')"><td><b class="num">${o.id}</b><div class="small muted">${esc(orderTitle(o))}</div></td>
+      <td class="n">${money(e.fee)}</td><td class="n">${money(e.com)}</td><td class="n"><b>${money(e.net)}</b></td><td>${earnTag(e.status)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">لا توجد أتعاب بعد</td></tr>'}
+    </tbody></table></div>`;
+}
+function lawyerProfile(u) {
+  return `<h2>ملفي المهني</h2><div class="a-grid"><div class="card stack">
+    <dl class="kv"><dt>الاسم</dt><dd>${esc(u.name)}</dd><dt>الصفة</dt><dd>${ROLES[u.role]}</dd><dt>رقم الترخيص</dt><dd class="num">${esc(u.license || '—')}</dd>
+    <dt>طلبات نشطة</dt><dd>${activeLoad(u.id)}</dd><dt>طلبات منجزة</dt><dd>${S.orders.filter(o => o.assignee === u.id && o.status === 'CLOSED').length}</dd></dl>
+    <div><label class="f">مجالات التخصص</label><div class="checks">${CATS.map(c => `<label><input type="checkbox" ${(u.specialties || []).includes(c.k) ? 'checked' : ''} onchange="K.toggleSpec('${c.k}')">${c.t}</label>`).join('')}</div></div>
+    <label class="switch"><input type="checkbox" id="availSw" ${u.active !== false ? 'checked' : ''} onchange="K.toggleAvail('${u.id}')"> متاح لاستقبال إسنادات جديدة</label></div>
+    <div class="banner info">🛡️ يعمل المحامون خلف المنصة تحت الاسم التجاري «خبير». لا تظهر هويتك للعميل إلا لضرورة نظامية، ولا يتاح التواصل المباشر خارج قنوات المنصة.</div></div>`;
+}
+
+function renderAdmin() {
+  const late = S.orders.filter(isLate), openCp = S.complaints.filter(c => c.status === 'open').length;
+  const queue = S.orders.filter(o => stage(o).who === 'admin' || isLate(o)).length;
+  const nav = [['orders', '📋 الطلبات', queue || ''], ['lawyers', '⚖️ المحامون', '', can('lawyers')], ['finance', '💳 المالية', '', can('finance')],
+    ['complaints', '📮 الشكاوى والاقتراحات', openCp || ''], ['audit', '🛡️ سجل الإجراءات', '', can('audit')], ['users', '👥 الصلاحيات', '', can('users')],
+    ['settings', '⚙️ الإعدادات', ''], ['notifs', '🔔 الإشعارات', unreadStaff() || '']];
+  let main;
+  if (AV.view === 'order' && order(AV.orderId)) main = staffOrder(order(AV.orderId));
+  else if (AV.view === 'lawyers') main = can('lawyers') ? adminLawyers() : denied();
+  else if (AV.view === 'finance') main = can('finance') ? adminFinance() : denied();
+  else if (AV.view === 'complaints') main = adminComplaints();
+  else if (AV.view === 'audit') main = can('audit') ? adminAudit() : denied();
+  else if (AV.view === 'users') main = can('users') ? adminUsers() : denied();
+  else if (AV.view === 'settings') main = adminSettings();
+  else if (AV.view === 'notifs') main = staffNotifs();
+  else main = adminOrders();
+  return consoleShell(nav, main);
+}
+function adminOrders() {
+  const all = S.orders.filter(o => o.status !== 'DRAFT'), f = AV.filter;
+  const filters = [['active', 'النشطة', o => !['CLOSED', 'CANCELLED'].includes(o.status)], ['unassigned', 'بانتظار الإسناد', o => stage(o).who === 'admin'],
+    ['late', '⏰ المتأخرة', isLate], ['ceo', 'بانتظار اعتماد المدير', o => stage(o).who === 'ceo'],
+    ...Object.keys(ST).filter(k => k !== 'DRAFT').map(k => [k, ST[k][0], o => o.status === k]), ['all', 'الكل', () => true]];
+  const fn = (filters.find(x => x[0] === f) || filters[0])[2];
+  const rows = all.filter(fn).sort((a, b) => (isLate(b) - isLate(a)) || b.updatedAt - a.updatedAt);
+  const late = all.filter(isLate), unas = all.filter(o => stage(o).who === 'admin').length;
+  return `<h2>الطلبات</h2>
+    <div class="kpis"><div class="kpi ${unas ? 'alert' : ''}"><b>${unas}</b><span>بانتظار الفرز والإسناد</span></div>
+      <div class="kpi"><b>${all.filter(o => o.status === 'IN_PROGRESS').length}</b><span>قيد التنفيذ</span></div>
+      <div class="kpi"><b>${all.filter(o => stage(o).who === 'ceo').length}</b><span>بانتظار اعتماد المدير</span></div>
+      <div class="kpi ${late.length ? 'alert' : ''}"><b>${late.length}</b><span>متأخرة (+${S.settings.delayHours} ساعة دون إجراء)</span></div></div>
+    ${late.length ? `<div class="banner err">⏰ <b>تنبيه تلقائي للتأخير:</b> ${late.map(o => `<a href="#admin" onclick="K.open('${o.id}');return false">${o.id}</a>`).join('، ')} تجاوزت ${S.settings.delayHours} ساعة دون اتخاذ إجراء.</div>` : ''}
+    <div class="chips">${filters.map(([k, t]) => `<button class="${f === k ? 'on' : ''}" onclick="K.filter('${k}')">${t}</button>`).join('')}</div>
+    ${ordersTable(rows)}`;
+}
+function adminLawyers() {
+  return `<h2>شبكة المحامين</h2>
+    <div class="lgrid">${lawyers().map(u => `<div class="lcard"><div class="row between"><b>${esc(u.name)}</b><span class="tag ${u.role === 'collaborator' ? 'violet' : 'blue'}">${ROLES[u.role]}</span></div>
+      <div class="small muted">ترخيص <span class="num">${esc(u.license || '—')}</span></div>
+      <div class="row small">${(u.specialties || []).map(k => `<span class="tag">${catLabel(k)}</span>`).join('') || '—'}</div>
+      <div class="row between small"><span>نشطة: <b>${activeLoad(u.id)}</b> • منجزة: <b>${S.orders.filter(o => o.assignee === u.id && o.status === 'CLOSED').length}</b></span>
+      <span class="tag ${u.active !== false ? 'green' : 'red'}">${u.active !== false ? 'متاح' : 'غير متاح'}</span></div>
+      <button class="btn ghost sm" onclick="K.toggleAvail('${u.id}')">${u.active !== false ? 'إيقاف الإسناد' : 'تفعيل الإسناد'}</button></div>`).join('')}</div>
+    <div class="card"><h3>إضافة محامٍ</h3><div class="grid2 r"><div><label class="f" for="nlName">الاسم</label><input type="text" id="nlName" placeholder="أ. ..."></div>
+      <div><label class="f" for="nlLic">رقم الترخيص</label><input type="text" id="nlLic"></div></div>
+      <label class="f" for="nlType">الصفة</label><select id="nlType"><option value="collaborator">محامٍ متعاون (خارجي)</option><option value="specialist">محامٍ داخلي</option></select>
+      <label class="f">التخصصات</label><div class="checks">${CATS.map(c => `<label><input type="checkbox" name="nlSpec" value="${c.k}">${c.t}</label>`).join('')}</div>
+      <button class="btn" style="margin-top:12px" onclick="K.addLawyer()">إضافة إلى الشبكة</button></div>`;
+}
+function adminFinance() {
+  const paid = S.orders.filter(o => o.payment);
+  const tot = paid.reduce((a, o) => a + o.payment.amount, 0), vat = paid.reduce((a, o) => a + o.contract.fee * VAT, 0);
+  const rows = paid.map(o => ({ o, e: earning(o) }));
+  const platform = rows.filter(x => x.e.status !== 'ملغاة').reduce((a, x) => a + x.e.com, 0);
+  const due = rows.filter(x => x.e.status === 'مستحقة').reduce((a, x) => a + x.e.net, 0);
+  return `<h2>المالية</h2>
+    <div class="kpis"><div class="kpi"><b class="num" style="font-size:19px">${money(tot)}</b><span>إجمالي المحصّل (شامل الضريبة)</span></div>
+      <div class="kpi"><b class="num" style="font-size:19px">${money(vat)}</b><span>ضريبة القيمة المضافة</span></div>
+      <div class="kpi"><b class="num" style="font-size:19px">${money(platform)}</b><span>عمولة المنصة (${S.settings.commission}%)</span></div>
+      <div class="kpi ${due ? 'alert' : ''}"><b class="num" style="font-size:19px">${money(due)}</b><span>مستحق للمحامين</span></div></div>
+    <div class="t-wrap"><table class="t"><thead><tr><th>الفاتورة</th><th>الطلب</th><th>المحامي</th><th>المحصّل</th><th>الأتعاب</th><th>العمولة</th><th>صافي المحامي</th><th>الحالة</th><th></th></tr></thead><tbody>
+    ${rows.map(({ o, e }) => `<tr><td class="n"><a href="#admin" onclick="showInvoice('${o.id}');return false">${o.payment.invoice}</a></td><td class="n"><a href="#admin" onclick="K.open('${o.id}');return false">${o.id}</a></td>
+      <td class="small">${esc(uname(o.assignee))}</td><td class="n">${money(o.payment.amount)}</td><td class="n">${money(e.fee)}</td><td class="n">${money(e.com)}</td><td class="n"><b>${money(e.net)}</b></td>
+      <td>${earnTag(e.status)}</td><td>${e.status === 'مستحقة' ? `<button class="btn sm" onclick="K.payout('${o.id}')">تسجيل التحويل</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="9" class="empty">لا توجد مدفوعات</td></tr>'}
+    </tbody></table></div>
+    <div class="card row"><label for="comIn">نسبة عمولة المنصة</label><input type="number" id="comIn" value="${S.settings.commission}" min="0" max="100" style="width:90px"><span>%</span><button class="btn sm" onclick="K.setCommission()">حفظ</button></div>`;
+}
+function adminComplaints() {
+  return `<h2>الشكاوى والاقتراحات</h2>
+    ${S.complaints.slice().reverse().map(c => `<div class="card"><div class="row between"><b>${c.type === 'complaint' ? '🔴 شكوى' : '💡 اقتراح'} ${c.orderId ? '• ' + c.orderId : ''}</b>
+      <span class="tag ${c.status === 'open' ? 'amber' : 'green'}">${c.status === 'open' ? 'مفتوح' : 'مغلق'}</span></div>
+      <p>${esc(c.text)}</p><div class="small muted">${fdt(c.at)}</div>
+      ${c.reply ? `<div class="req" style="margin-top:8px"><b>الرد:</b> ${esc(c.reply)} <span class="meta">— ${esc(c.by)}</span></div>` :
+        `<div class="row" style="margin-top:8px"><input type="text" id="cr_${c.id}" class="grow" placeholder="الرد..."><button class="btn sm" onclick="K.cpReply('${c.id}')">رد وإغلاق</button></div>`}</div>`).join('') || '<div class="denied">لا توجد شكاوى أو اقتراحات</div>'}`;
+}
+function adminAudit() {
+  const list = S.audit.slice().reverse();
+  return `<h2>سجل الإجراءات الداخلي (Audit Trail)</h2>
+    <div class="banner info small">يُسجَّل تلقائياً كل إجراء حساس — يظهر للمدير التنفيذي فقط. (${list.length} إجراء)</div>
+    <div class="t-wrap"><table class="t"><thead><tr><th>التاريخ والوقت</th><th>المستخدم</th><th>الإجراء</th><th>الطلب</th><th>التفاصيل</th></tr></thead><tbody>
+    ${list.map(a => `<tr><td class="small n">${fdt(a.at)}</td><td>${esc(a.user)}</td><td><b>${esc(a.action)}</b></td>
+      <td class="n">${a.orderId && order(a.orderId) ? `<a href="#admin" onclick="K.open('${a.orderId}');return false">${a.orderId}</a>` : esc(a.orderId || '—')}</td><td class="small">${esc(a.details)}</td></tr>`).join('')}
+    </tbody></table></div>`;
+}
+function adminUsers() {
+  const rows = [['استقبال الطلبات والمراجعة الأولية', 'intake'], ['الفرز والإسناد الأول لمحامٍ', 'assign'], ['تحديد المسار وإعداد العقد والأتعاب', 'route'],
+    ['تسليم النتائج وفتح صلاحية الرفع', 'deliver'], ['الاعتماد النهائي لبدء التنفيذ (CEO Gate)', 'approve'], ['إعادة إسناد الطلبات', 'reassign'],
+    ['المالية وتحويل الأتعاب', 'finance'], ['الاطلاع على سجل الإجراءات', 'audit']];
+  return `<h2>المستخدمون والصلاحيات</h2>
+    <div class="t-wrap"><table class="t"><thead><tr><th>المستخدم</th><th>الدور</th><th></th></tr></thead><tbody>
+    ${S.users.map(u => `<tr><td>${esc(u.name)}</td><td><select id="role_${u.id}" aria-label="دور ${esc(u.name)}" ${u.id === me().id ? 'disabled' : ''}>${Object.entries(ROLES).map(([k, v]) => `<option value="${k}" ${k === u.role ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
+      <td>${u.id === me().id ? '<span class="small muted">حسابك</span>' : `<button class="btn sm" onclick="K.setRole('${u.id}')">حفظ</button>`}</td></tr>`).join('')}</tbody></table></div>
+    <h3 style="margin:8px 0 0">مصفوفة الصلاحيات</h3>
+    <div class="t-wrap"><table class="t"><thead><tr><th>الوظيفة</th>${Object.values(ROLES).map(r => `<th style="text-align:center">${r}</th>`).join('')}</tr></thead><tbody>
+    ${rows.map(([t, p]) => `<tr><td>${t}</td>${Object.keys(ROLES).map(r => `<td style="text-align:center">${PERMS[r].includes(p) ? (r === 'ceo' && !['reception', 'specialist', 'collaborator'].some(x => PERMS[x].includes(p)) ? '<b>✔ حصري</b>' : '✔') : '❌'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <p class="small muted">ملاحظة هيكلية: في بداية التشغيل يمكن أن يجمع شخص واحد دور المدير التنفيذي والمحامي.</p>`;
+}
+function adminSettings() {
+  return `<h2>الإعدادات</h2>
+    <div class="card"><h3>التنبيه التلقائي للتأخير</h3>
+      <div class="row"><label for="delayH">إطلاق تنبيه عند بقاء الطلب دون إجراء لمدة</label><input type="number" id="delayH" value="${S.settings.delayHours}" style="width:90px" min="1"><span>ساعة</span>
+      ${can('users') ? '<button class="btn sm" onclick="K.setDelay()">حفظ</button>' : '<span class="small muted">🔒 للمدير التنفيذي</span>'}</div></div>
+    <div class="card"><h3>⏩ محاكاة مرور الوقت</h3><p class="small muted" style="margin-top:0">لاختبار حذف المسودات بعد 168 ساعة وتنبيهات التأخير. الوقت التجريبي الحالي: <b class="num">${fdt(now())}</b></p>
+      <div class="row"><button class="btn ghost sm" onclick="K.time(HOUR*12)">+12 ساعة</button><button class="btn ghost sm" onclick="K.time(DAY)">+يوم</button>
+      <button class="btn ghost sm" onclick="K.time(DAY*7)">+أسبوع</button><button class="btn ghost sm" onclick="K.time(0)">العودة للوقت الحقيقي</button></div></div>
+    <div class="card"><h3>بيانات العرض</h3><p class="small muted" style="margin-top:0">البيانات محفوظة في هذا المتصفح فقط وتشترك فيها البوابات الثلاث. إعادة الضبط تُرجع البيانات التجريبية الأولية.</p>
+      <button class="btn red sm" onclick="K.reset()">إعادة ضبط البيانات</button></div>`;
+}
+
+function staffOrder(o) {
+  const lw = PORTAL === 'lawyer', s = stage(o), sm = summary(o), ai = aiAssist(o);
+  const ua = o.status === 'UNDER_REVIEW', mineAccepted = lw && o.assignee === me().id && o.assignAccepted;
+  const canWork = lw ? mineAccepted : can('route');
+  const open = ua && !o.contract && !o.freeAnswer;
+  let act = '';
+  if (lw && ua && !o.assignAccepted) {
+    act += `<div class="card" style="border:2px solid var(--green)"><h4>📨 إسناد جديد بانتظار ردك</h4>
+      <p class="small muted" style="margin-top:0">راجع البيانات ثم اقبل الإسناد لبدء الدراسة الأولية، أو اعتذر مع ذكر السبب ليُعاد إسناده.</p>
+      <button class="btn green block" onclick="K.accept()">قبول الإسناد</button>
+      <details style="margin-top:8px"><summary class="small" style="cursor:pointer;color:var(--red);font-weight:700">الاعتذار عن الطلب</summary>
+        <textarea id="declineWhy" style="margin-top:6px" placeholder="سبب الاعتذار (تعارض مصالح، خارج التخصص، ضغط عمل...)"></textarea>
+        <button class="btn red sm" style="margin-top:6px" onclick="K.decline()">إرسال الاعتذار</button></details></div>`;
+  }
+  if (!lw && open && can('assign')) {
+    const recs = recommend(o);
+    act += `<div class="card"><h4>الفرز والإسناد لمحامٍ</h4>
+      ${o.assignee ? `<div class="small">المسند إليه: <b>${esc(uname(o.assignee))}</b> ${o.assignAccepted ? '<span class="tag green">قَبِل</span>' : '<span class="tag amber">بانتظار قبوله</span>'}</div>` : ''}
+      ${!o.assignee || can('reassign') ? `<label class="f" for="assignSel">${o.assignee ? 'إعادة الإسناد إلى' : 'إسناد إلى'}</label>
+        <select id="assignSel">${recs.map((r, i) => `<option value="${r.u.id}">${esc(r.u.name)} — ${r.match ? '✓ متخصص' : 'غير متخصص'} • ${r.load} نشط${i === 0 ? ' (مقترح)' : ''}</option>`).join('')}</select>
+        <button class="btn dark sm" style="margin-top:8px" onclick="K.assign()">${o.assignee ? 'إعادة الإسناد' : 'تأكيد الفرز والإسناد'}</button>` : '<div class="small muted" style="margin-top:6px">🔒 إعادة الإسناد للمدير التنفيذي فقط</div>'}</div>`;
+  }
+  if (open && (lw ? mineAccepted : can('intake'))) {
+    act += `<div class="card"><h4>طلب استكمال من العميل</h4><textarea id="needText" placeholder="مثال: نرجو إرفاق صورة عقد العمل وآخر مسير رواتب"></textarea>
+      <button class="btn sm" style="margin-top:6px" onclick="K.askClient()">إرسال تنبيه للعميل</button></div>`;
+  }
+  if (open && canWork && o.assignee) {
+    act += `<div class="card"><h4>نتيجة الدراسة الأولية ${!lw ? '<span class="tag">بصفتك مختصاً</span>' : ''}</h4>
+      <details><summary class="small" style="font-weight:700;cursor:pointer;color:var(--green)">أ. إجابة نهائية مجانية (وإغلاق الطلب)</summary>
+        <textarea id="faText" style="margin-top:6px" placeholder="الإجابة مع توجيه العميل للمسار الصحيح..."></textarea>
+        <button class="btn green sm" style="margin-top:6px" onclick="K.freeAnswer()">إرسال الإجابة وإغلاق الطلب</button></details>
+      <details style="margin-top:10px" open><summary class="small" style="font-weight:700;cursor:pointer;color:var(--blue)">ب. خدمة مدفوعة — إصدار عقد إلكتروني</summary>
+        <label class="f" for="ctScope">نطاق العمل</label><textarea id="ctScope" placeholder="وصف دقيق لما سيقدمه خبير..."></textarea>
+        <div class="row"><div class="grow"><label class="f" for="ctFee">الأتعاب قبل الضريبة (ر.س)</label><input id="ctFee" type="number" min="0" oninput="K.feePreview()"></div>
+        <div class="grow"><label class="f" for="ctDays">المدة (يوم)</label><input id="ctDays" type="number" min="1"></div></div>
+        <div class="small muted num" id="feePrev" style="margin-top:6px"></div>
+        <button class="btn dark sm" style="margin-top:8px" onclick="K.issueContract()">إصدار العقد للعميل</button></details></div>`;
+  }
+  if (ua && o.contract && !o.contract.acceptedAt) act += `<div class="banner warn small">📃 العقد صادر — بانتظار اعتماد العميل.</div>`;
+  if (ua && o.contract && o.contract.acceptedAt && !o.payment) act += `<div class="banner warn small">💳 العقد معتمد — بانتظار سداد العميل.</div>`;
+  if (ua && o.payment && !o.ceoApproved) {
+    act += !lw && can('approve')
+      ? `<div class="card" style="border:2px solid var(--navy)"><h4>🛡️ بوابة المدير التنفيذي (CEO Gate)</h4>
+          <p class="small muted" style="margin-top:0">العقد معتمد والأتعاب مسددة (${money(o.payment.amount)} — ${o.payment.invoice}). لا يبدأ العمل إلا باعتمادك.</p>
+          <button class="btn dark block" onclick="K.approve()">اعتماد بدء التنفيذ ← قيد التنفيذ</button></div>`
+      : `<div class="banner info small">🛡️ تم السداد — بانتظار الاعتماد الحصري من المدير التنفيذي لبدء التنفيذ.</div>`;
+  }
+  if (o.status === 'IN_PROGRESS') {
+    act += canWork ? `<div class="card"><h4>📦 تسليم النتيجة للعميل</h4>
+      ${o.revisions.length ? `<div class="banner ${o.revisions.length >= 3 ? 'warn' : 'info'} small" style="margin-bottom:8px">طلب تعديل رقم ${o.revisions.length}${o.revisions.length >= 3 ? ' (المرة الثالثة أو أكثر)' : ''}: «${esc(o.revisions[o.revisions.length - 1].text)}»</div>` : ''}
+      <label class="f" for="resFiles">ملفات المخرجات</label><input type="file" id="resFiles" multiple>
+      <label class="f" for="resNote">ملاحظة للعميل</label><textarea id="resNote" placeholder="ملخص ما تم إنجازه والخطوات التالية..."></textarea>
+      <button class="btn green block" style="margin-top:8px" onclick="K.deliver()">رفع النتيجة ← جاهز للتحميل</button></div>`
+      : `<div class="banner info small">⚙️ ${s.t}.</div>`;
+  }
+  if (o.status === 'READY_DELIVERY') act += `<div class="banner ok small">📦 النتيجة مرفوعة — بانتظار استلام العميل أو طلب تعديل.</div>`;
+  if (!lw && can('reassign') && o.assignee && !open && !['CLOSED', 'CANCELLED'].includes(o.status)) {
+    act += `<div class="card"><h4>إعادة الإسناد</h4><div class="small">الحالي: <b>${esc(uname(o.assignee))}</b></div>
+      <div class="row" style="margin-top:6px"><select id="assignSel" class="grow" aria-label="المحامي">${recommend(o).map(r => `<option value="${r.u.id}" ${r.u.id === o.assignee ? 'selected' : ''}>${esc(r.u.name)}</option>`).join('')}</select>
+      <button class="btn sm" onclick="K.assign()">نقل</button></div></div>`;
+  }
+  const e = earning(o);
+  if (lw && o.contract) act += `<div class="card small"><h4>💼 أتعابك من هذا الطلب</h4><dl class="kv"><dt>الأتعاب</dt><dd class="num">${money(o.contract.fee)}</dd><dt>عمولة المنصة</dt><dd class="num">${money(o.contract.fee * commission())}</dd><dt>الصافي</dt><dd class="num">${money(o.contract.fee * (1 - commission()))}</dd>${e ? `<dt>الحالة</dt><dd>${earnTag(e.status)}</dd>` : ''}</dl></div>`;
+
+  const reqs = o.requests.map(r => {
+    let ctl = '';
+    if (r.from === 'client' && r.status === 'open' && (lw ? mineAccepted : true)) {
+      ctl = `<textarea id="ar_${r.id}" style="margin-top:6px;min-height:50px" placeholder="الرد على العميل..."></textarea><div class="row" style="margin-top:4px">
+        <button class="btn sm" onclick="K.reply('${r.id}')">رد وإغلاق</button>
+        ${r.type === 'upload' && can('unlock') ? `<button class="btn green sm" onclick="K.unlock('${r.id}')">فتح صلاحية الرفع</button>` : ''}
+        ${r.type === 'change' ? (can('decide') ? `<button class="btn red sm" onclick="K.cancelByAdmin('${r.id}')">اعتماد الإلغاء</button>` : '<span class="small muted">قرار التعديل/الإلغاء لإدارة خبير</span>') : ''}</div>`;
+    }
+    return reqView(r, 'staff', ctl);
+  }).join('');
+  const tlog = !lw && can('audit') ? S.audit.filter(a => a.orderId === o.id).slice().reverse() : [];
+  return `<div class="row between"><div class="row"><button class="btn ghost sm" onclick="K.go('orders')">→ الطلبات</button><h2 class="num">${o.id}</h2>${pill(o.status)}
+      ${isLate(o) ? '<span class="tag red">⏰ متأخر</span>' : ''}</div><span class="small muted">${s.t}</span></div>
+    <div class="a-grid"><div class="stack">
+      <div class="card"><h3>بيانات الطلب (كما أدخلها العميل)</h3>
+        <dl class="kv"><dt>العميل</dt><dd>${esc(S.client.name)} — ملف ${S.client.fileNo}</dd><dt>الخدمة</dt><dd>${svcLabel(o.service)}</dd><dt>التصنيف</dt><dd>${catLabel(o.category)}</dd>
+        <dt>الطرف الآخر</dt><dd>${esc(sm.otherParty) || '—'}</dd><dt>الموضوع</dt><dd>${esc(sm.subject) || '—'}</dd><dt>المبلغ</dt><dd class="num">${sm.amount || '—'}</dd>
+        <dt>التاريخ</dt><dd class="num">${esc(sm.date) || '—'}</dd><dt>أُرسل</dt><dd>${fdt(o.submittedAt)}</dd>${!lw ? `<dt>المحامي</dt><dd>${esc(uname(o.assignee))}</dd>` : ''}</dl>
+        ${o.freeText ? `<div class="req" style="margin-top:10px"><div class="meta">وصف العميل الحر</div>${esc(o.freeText)}</div>` : ''}
+        ${o.notes ? `<div class="req" style="margin-top:8px"><div class="meta">تفاصيل إضافية</div>${esc(o.notes)}</div>` : ''}
+        <details style="margin-top:8px"><summary class="small" style="cursor:pointer">جميع الأسئلة والإجابات (${Object.keys(o.answers).length})</summary>
+          ${Object.entries(o.answers).map(([k, v]) => `<div class="qa"><span class="q">${esc(qText(o, k))}</span><span class="a">${esc(v || 'لم يُحدد')}</span></div>`).join('')}</details></div>
+      ${o.freeAnswer ? `<div class="card" style="border-color:var(--ok-line)"><h4>💡 الإجابة المجانية المرسلة</h4>${esc(o.freeAnswer.text)}<div class="small muted">${esc(uname(o.freeAnswer.by))} • ${fdt(o.freeAnswer.at)}</div></div>` : ''}
+      ${o.contract ? contractCard(o, false) + `<div class="small muted">أصدره ${esc(uname(o.contract.issuedBy))} • الدفع: ${o.payment ? `✔ ${o.payment.method} • <a href="#${PORTAL}" onclick="showInvoice('${o.id}');return false">${o.payment.invoice}</a>` : 'لم يُسدد'} • اعتماد التنفيذ: ${o.ceoApproved ? '✔' : 'بانتظار'}</div>` : ''}
+      ${o.result ? resultCard(o) : ''}
+      <div class="card"><h3>📌 التنبيهات الهيكلية</h3><div class="stack">${reqs || '<div class="small muted">لا توجد</div>'}</div></div>
+      <div class="card"><h3>📎 المستندات</h3><ul class="files">${o.docs.map(d => `<li><span>${d.by === 'client' ? '📄' : '🏢'} ${esc(d.name)}</span><span class="small muted">${d.by === 'client' ? 'العميل' : 'خبير'} • ${fdt(d.at)}</span></li>`).join('') || '<li class="muted">—</li>'}</ul>
+        <div class="small muted" style="margin-top:8px">رفع العميل المباشر: ${canClientUpload(o) ? '<span class="tag green">مفتوح</span>' : '<span class="tag">مغلق</span>'}</div></div>
+      <div class="card"><h3>🗒️ ملاحظات داخلية (لا تظهر للعميل)</h3><div class="stack">
+        ${o.internal.map(n => `<div class="req"><div>${esc(n.text)}</div><div class="meta">${esc(n.by)} • ${fdt(n.at)}</div></div>`).join('')}
+        <div class="row"><input type="text" id="noteIn" class="grow" aria-label="ملاحظة داخلية" placeholder="أضف ملاحظة..." onkeydown="if(event.key==='Enter')K.note()"><button class="btn sm" onclick="K.note()">إضافة</button></div></div></div>
+    </div><div class="stack">
+      <div class="ai"><h4>🤖 المساعد الخلفي (AI) — داخلي فقط</h4>
+        <div class="small" style="color:var(--violet);margin-bottom:8px">مساند للفرز والاستخراج والمراجعة. لا يُعرض للعميل ولا يُنسب إليه.</div>
+        <dl class="kv small"><dt>تصنيف مقترح</dt><dd>${ai.suggested ? catLabel(ai.suggested) : 'غير كافٍ'} ${ai.mismatch ? '<span class="tag amber">يختلف عن اختيار العميل</span>' : ''}</dd>
+        <dt>المسار المحتمل</dt><dd>${ai.route}</dd><dt>مبالغ مستخرجة</dt><dd class="num">${ai.amounts.length ? ai.amounts.map(money).join('، ') : '—'}</dd>
+        <dt>نواقص</dt><dd>${ai.missing.length ? ai.missing.join('، ') : 'لا يوجد'}</dd></dl>
+        ${ai.flags.map(f => `<div class="small" style="margin-top:4px">${f}</div>`).join('')}</div>
+      ${act}
+      ${tlog.length ? `<div class="card"><h4>🛡️ سجل إجراءات الطلب</h4>${tlog.map(a => `<div class="qa small"><span class="q">${fdt(a.at)}<br>${esc(a.user)}</span><span class="a">${esc(a.action)}</span></div>`).join('')}</div>` : ''}
+    </div></div>`;
+}
+
+const K = {
+  login(id) { if (PORTAL === 'lawyer') { S.curLawyer = id; LV.view = 'home'; } else S.curAdmin = id; render(); toast(`تم الدخول باسم ${me().name}`); },
+  go(v) { V().view = v; render(); scrollTo(0, 0); },
+  open(id) { const v = V(); v.view = 'order'; v.orderId = id; render(); scrollTo(0, 0); },
+  filter(f) { V().filter = f; render(); },
+  openNotif(id) {
+    const n = S.snotifs.find(x => x.id === id); if (n) n.read = true;
+    const o = n && n.orderId && order(n.orderId);
+    o && (PORTAL === 'admin' || o.assignee === me().id) ? K.open(o.id) : render();
+  },
+  cur() { return order(V().orderId); },
+  val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; },
+  assign() {
+    const o = K.cur(), to = K.val('assignSel'); if (!to || to === o.assignee) return toast('اختر محامياً مختلفاً');
+    const from = o.assignee;
+    o.assignee = to; o.triaged = true; o.assignAccepted = !!o.contract; touch(o);
+    audit(from ? 'نقل طلب' : 'فرز وإسناد', o.id, from ? `من ${uname(from)} إلى ${uname(to)}` : `إلى ${uname(to)}`);
+    notifyStaff(to, o.contract ? `نُقل إليك الطلب ${o.id}` : `أُسند إليك الطلب ${o.id} — بانتظار قبولك`, o.id);
+    if (from) notifyStaff(from, `نُقل الطلب ${o.id} إلى محامٍ آخر`, o.id);
+    render(); toast('تم الإسناد وإشعار المحامي');
+  },
+  accept() { const o = K.cur(); o.assignAccepted = true; touch(o); audit('قبول الإسناد', o.id, ''); render(); toast('تم قبول الإسناد — ابدأ الدراسة الأولية'); },
+  decline() {
+    const o = K.cur(), why = K.val('declineWhy'); if (!why) return toast('اذكر سبب الاعتذار');
+    audit('اعتذار عن الإسناد', o.id, why); o.assignee = null; o.assignAccepted = false; touch(o);
+    notifyRole('reception', `اعتذر ${me().name} عن الطلب ${o.id}: ${why}`, o.id); notifyRole('ceo', `اعتذار عن الطلب ${o.id} — يحتاج إعادة إسناد`, o.id);
+    LV.view = 'home'; render(); toast('أُرسل الاعتذار للإدارة');
+  },
+  askClient() {
+    const o = K.cur(), v = K.val('needText'); if (!v) return toast('اكتب المطلوب من العميل');
+    o.requests.push({ id: nid('r'), from: 'team', type: 'complete', text: v, at: now(), status: 'open' }); o.uploadUnlocked = true; touch(o);
+    audit('طلب استكمال', o.id, v); push(`مطلوب استكمال بيانات لطلبك ${o.id}`, o.id); render(); toast('أُرسل التنبيه للعميل');
+  },
+  freeAnswer() {
+    const o = K.cur(), v = K.val('faText'); if (!v) return toast('اكتب الإجابة أولاً');
+    o.freeAnswer = { text: v, at: now(), by: me().id }; o.status = 'CLOSED'; o.assignee = o.assignee || me().id; touch(o);
+    audit('إرسال نتيجة', o.id, 'إجابة نهائية مجانية وإغلاق الطلب'); push(`وصلتك إجابة خبير على طلبك ${o.id}`, o.id); render();
+  },
+  feePreview() { const f = +K.val('ctFee') || 0, el = document.getElementById('feePrev'); if (el) el.textContent = f ? `يدفع العميل ${money(f * (1 + VAT))} • عمولة المنصة ${money(f * commission())} • صافي المحامي ${money(f * (1 - commission()))}` : ''; },
+  issueContract() {
+    const o = K.cur(), scope = K.val('ctScope'), fee = +K.val('ctFee'), days = +K.val('ctDays');
+    if (!scope || !(fee > 0) || !(days > 0)) return toast('أكمل نطاق العمل والأتعاب والمدة');
+    o.contract = { scope, fee, days, issuedAt: now(), issuedBy: me().id, acceptedAt: null }; touch(o);
+    audit('إصدار عقد', o.id, `أتعاب ${money(fee)} — ${days} يوم`); push(`صدر عقد طلبك ${o.id} — يرجى مراجعته واعتماده`, o.id);
+    render(); toast('صدر العقد وأُشعر العميل');
+  },
+  approve() {
+    const o = K.cur(); o.ceoApproved = true; o.status = 'IN_PROGRESS'; touch(o);
+    audit('اعتماد بدء التنفيذ', o.id, 'CEO Gate'); push(`بدأ العمل على طلبك ${o.id}`, o.id); notifyStaff(o.assignee, `اعتُمد بدء التنفيذ للطلب ${o.id} — ابدأ العمل`, o.id); render();
+  },
+  deliver() {
+    const o = K.cur(), files = [...document.getElementById('resFiles').files].map(f => f.name), note = K.val('resNote');
+    if (!files.length && !note) return toast('أرفق ملف المخرجات أو اكتب ملاحظة');
+    o.result = { files: [...(o.result ? o.result.files : []), ...files], note, at: now(), by: me().id };
+    files.forEach(f => o.docs.push({ name: f, size: 0, at: now(), by: 'team' }));
+    o.requests.filter(r => r.type === 'revision' && r.status === 'open').forEach(r => { r.status = 'done'; r.reply = 'تم تنفيذ التعديل ورفع النتيجة المحدثة.'; });
+    o.status = 'READY_DELIVERY'; touch(o);
+    audit('إرسال نتيجة', o.id, files.join('، ') || note); push(`نتيجة طلبك ${o.id} جاهزة للتحميل`, o.id); render();
+  },
+  reply(rid) {
+    const o = K.cur(), r = o.requests.find(x => x.id === rid), v = K.val('ar_' + rid); if (!v) return toast('اكتب الرد أولاً');
+    r.reply = v; r.status = 'done'; touch(o); audit('رد على تنبيه', o.id, `${REQ_T[r.type]}: ${v}`); push(`رد خبير على تنبيهك في الطلب ${o.id}`, o.id); render();
+  },
+  unlock(rid) {
+    const o = K.cur(), r = o.requests.find(x => x.id === rid);
+    o.uploadUnlocked = true; r.status = 'done'; r.reply = K.val('ar_' + rid) || 'تم فتح صلاحية رفع المستند لك.'; touch(o);
+    audit('فتح صلاحية الرفع', o.id, ''); push(`فُتحت لك صلاحية رفع مستند في الطلب ${o.id}`, o.id); render();
+  },
+  cancelByAdmin(rid, ok) {
+    if (!ok) return ask('اعتماد إلغاء الطلب بناءً على طلب العميل؟', () => K.cancelByAdmin(rid, true));
+    const o = K.cur(), r = o.requests.find(x => x.id === rid);
+    r.status = 'done'; r.reply = K.val('ar_' + rid) || 'تمت الموافقة على طلب الإلغاء.'; o.status = 'CANCELLED'; touch(o);
+    audit('إلغاء طلب', o.id, 'بقرار الإدارة بناءً على طلب مستقل من العميل'); push(`تم إلغاء طلبك ${o.id} بناءً على طلبك`, o.id); notifyStaff(o.assignee, `أُلغي الطلب ${o.id} بقرار الإدارة`, o.id); render();
+  },
+  note() { const o = K.cur(), v = K.val('noteIn'); if (!v) return; o.internal.push({ text: v, by: me().name, at: now() }); touch(o); render(); },
+  cpReply(id) {
+    const c = S.complaints.find(x => x.id === id), v = K.val('cr_' + id); if (!v) return;
+    c.reply = v; c.by = me().name; c.status = 'done'; push('تم الرد على ' + (c.type === 'complaint' ? 'شكواك' : 'اقتراحك'), c.orderId || null); render();
+  },
+  setRole(uid) {
+    const u = user(uid), r = K.val('role_' + uid); if (r === u.role) return;
+    audit('تغيير صلاحيات', '—', `${u.name}: ${ROLES[u.role]} ← ${ROLES[r]}`); u.role = r;
+    if (LAWYER_ROLES.includes(r) && !u.specialties) { u.specialties = []; u.active = true; }
+    render(); toast('تم تحديث الصلاحية');
+  },
+  toggleSpec(k) { const u = me(); u.specialties = u.specialties || []; u.specialties = u.specialties.includes(k) ? u.specialties.filter(x => x !== k) : [...u.specialties, k]; render(); },
+  toggleAvail(uid) { const u = user(uid); u.active = u.active === false; audit('تغيير التوفر', '—', `${u.name}: ${u.active ? 'متاح' : 'غير متاح'}`); render(); },
+  addLawyer() {
+    const name = K.val('nlName'); if (!name) return toast('اكتب اسم المحامي');
+    const specs = [...document.querySelectorAll('input[name=nlSpec]:checked')].map(x => x.value);
+    const u = { id: nid('u'), name, role: K.val('nlType'), license: K.val('nlLic'), specialties: specs, active: true };
+    S.users.push(u); audit('تغيير صلاحيات', '—', `إضافة ${name} بصفة ${ROLES[u.role]}`); render(); toast('أُضيف المحامي إلى الشبكة');
+  },
+  payout(oid) {
+    const o = order(oid), e = earning(o); o.payout = { at: now(), by: me().name };
+    audit('تحويل أتعاب', o.id, `${money(e.net)} إلى ${uname(o.assignee)}`); notifyStaff(o.assignee, `تم تحويل أتعابك عن الطلب ${o.id}: ${money(e.net)}`, o.id); render();
+  },
+  setCommission() { S.settings.commission = Math.min(100, Math.max(0, +K.val('comIn') || 0)); audit('تعديل العمولة', '—', `${S.settings.commission}%`); render(); toast('تم الحفظ'); },
+  setDelay() { S.settings.delayHours = Math.max(1, +K.val('delayH') || 48); render(); toast('تم الحفظ'); },
+  time(ms) { S.settings.offset = ms ? (S.settings.offset || 0) + ms : 0; render(); toast('الوقت التجريبي: ' + fdt(now())); },
+  reset(ok) {
+    if (!ok) return ask('إعادة ضبط جميع البيانات إلى البيانات التجريبية الأولية؟', () => K.reset(true));
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    S = seed(); CV.screen = 'home'; AV.view = 'orders'; LV.view = 'home'; render(); toast('تمت إعادة الضبط');
+  },
+};
+
+/* ================= مشترك ================= */
+function showInvoice(id) {
+  const o = order(id), p = o.payment, fee = o.contract.fee;
+  modal(`<div class="invoice"><div class="row between"><h3 style="margin:0">🧾 فاتورة ضريبية مبسطة</h3><b class="num">${p.invoice}</b></div>
+    <p class="small muted">خبير — المكتب الحقوقي الرقمي • ${fdt(p.at)}</p>
+    <table><tr><td>العميل</td><td>${esc(S.client.name)} (${S.client.fileNo})</td></tr><tr><td>الطلب</td><td>${o.id}</td></tr>
+    <tr><td>الخدمة</td><td>${esc(o.contract.scope.slice(0, 70))}…</td></tr><tr><td>المبلغ قبل الضريبة</td><td>${money(fee)}</td></tr>
+    <tr><td>ضريبة القيمة المضافة 15%</td><td>${money(fee * VAT)}</td></tr><tr><td><b>الإجمالي</b></td><td><b>${money(p.amount)}</b></td></tr>
+    <tr><td>وسيلة الدفع</td><td>${p.method}</td></tr></table>
+    <button class="btn block" style="margin-top:14px" onclick="closeModal()">إغلاق</button></div>`);
+}
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
+function showInstall() {
+  const standalone = window.matchMedia && matchMedia('(display-mode: standalone)').matches;
+  modal(`<h3 style="margin-top:0">📲 تثبيت خبير كتطبيق</h3>
+    ${standalone ? '<div class="banner ok">أنت تستخدم النسخة المثبتة من التطبيق.</div>' : ''}
+    ${deferredPrompt ? '<button class="btn green block" onclick="doInstall()">تثبيت الآن</button>' : ''}
+    <div class="stack" style="margin-top:12px">
+      <div class="card"><h4>آيفون (Safari)</h4><div class="small">افتح موقع خبير ← زر المشاركة ⬆️ ← «إضافة إلى الشاشة الرئيسية».</div></div>
+      <div class="card"><h4>أندرويد (Chrome)</h4><div class="small">افتح موقع خبير ← القائمة ⋮ ← «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</div></div>
+      <div class="card"><h4>الكمبيوتر (Chrome / Edge)</h4><div class="small">أيقونة التثبيت في شريط العنوان، أو القائمة ← «تثبيت خبير».</div></div>
+    </div>
+    <p class="small muted">يظهر التطبيق بأيقونة خبير ويفتح بملء الشاشة دون شريط المتصفح، تمهيداً لإطلاقه في App Store وGoogle Play.</p>
+    <button class="btn ghost block" onclick="closeModal()">إغلاق</button>`);
+}
+async function doInstall() { if (!deferredPrompt) return; deferredPrompt.prompt(); try { await deferredPrompt.userChoice; } catch (e) {} deferredPrompt = null; closeModal(); }
+function modal(h) { document.getElementById('modalRoot').innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true">${h}</div></div>`; }
+let askFn = null;
+function ask(msg, fn) {
+  askFn = fn;
+  modal(`<h3 style="margin-top:0">تأكيد</h3><p>${esc(msg)}</p><div class="row"><button class="btn red" onclick="const f=askFn;askFn=null;closeModal();f&&f()">تأكيد</button><button class="btn ghost" onclick="closeModal()">تراجع</button></div>`);
+}
+function closeModal() { document.getElementById('modalRoot').innerHTML = ''; }
+function toast(m) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = m; document.body.appendChild(t); setTimeout(() => t.remove(), 2600); }
+function setPortal(p, fromHash) {
+  PORTAL = ['client', 'lawyer', 'admin'].includes(p) ? p : 'client';
+  if (!fromHash) { try { if (location.hash !== '#' + PORTAL) location.hash = PORTAL; } catch (e) {} }
+  pushQueue = null; render(); scrollTo(0, 0);
+}
+function render() {
+  purgeDrafts();
+  document.getElementById('app').innerHTML = PORTAL === 'lawyer' ? renderLawyer() : PORTAL === 'admin' ? renderAdmin() : renderClient();
+  document.querySelectorAll('#portalSeg button').forEach(b => b.classList.toggle('on', b.dataset.p === PORTAL));
+  document.getElementById('clock').textContent = (S.settings.offset ? '⏩ وقت تجريبي: ' : '') + fdt(now());
+  if (pushQueue) { const q = pushQueue; setTimeout(() => { if (pushQueue === q) { pushQueue = null; const t = document.querySelector('.push'); t && t.remove(); } }, 3800); }
+  save();
+}
+
+document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl';
+load();
+window.addEventListener('hashchange', () => setPortal(location.hash.slice(1), true));
+setPortal((location.hash || '').slice(1), true);
+setInterval(() => { document.getElementById('clock').textContent = (S.settings.offset ? '⏩ وقت تجريبي: ' : '') + fdt(now()); }, 30000);
+</script>
