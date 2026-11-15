@@ -1,9 +1,9 @@
 $root = Join-Path $PSScriptRoot 'site'
 $types = @{ '.html'='text/html; charset=utf-8'; '.js'='text/javascript; charset=utf-8'; '.webmanifest'='application/manifest+json; charset=utf-8'; '.png'='image/png'; '.json'='application/json' }
 $l = New-Object System.Net.HttpListener
-$l.Prefixes.Add('http://localhost:8765/')
+$l.Prefixes.Add('http://localhost:8770/')
 $l.Start()
-Write-Host 'Serving site/ on http://localhost:8765/'
+Write-Host 'Serving site/ on http://localhost:8770/'
 while ($l.IsListening) {
   $c = $l.GetContext()
   $p = [Uri]::UnescapeDataString($c.Request.Url.AbsolutePath.TrimStart('/'))
