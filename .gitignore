@@ -9,3 +9,5 @@ secrets/
 site/
 .DS_Store
 Thumbs.db
+# مصادر لا تُرفع (المستودع عام)
+docs/المصادر/*.mhtml
